@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🔥 Calories Burnt Prediction: Machine Learning Mini-Project
 
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
@@ -150,3 +151,6 @@ All models are evaluated on multi-class accuracy, precision, recall, and macro F
 
 ## ⚖️ License
 This project is open-source and licensed under the MIT License.
+=======
+# Calorie-Burnt-Prediction
+>>>>>>> e76b18f64bfe0661a700a76d01f46de2e79bdb47
