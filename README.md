@@ -9,12 +9,12 @@
 
 ## 📌 Project Overview & Evaluation Rubric Alignment
 
-| Evaluation Category | Allocated Marks | Features Implemented in Codebase |
+| Evaluation Category | Features Implemented in Codebase |
 | :--- | :---: | :--- |
-| **1. Data Cleaning & Splitting** | **3 Marks** | • Automated inner-merge of `exercise.csv` & `calories.csv` on `User_ID` ($N=15,000$ verified zero loss)<br>• Missing values & duplicate checking<br>• Physiological impossibility filtering (body temp, heart rate)<br>• IQR outlier detection and justification<br>• Variance Inflation Factor (VIF) multicollinearity diagnostics<br>• **Strict Split-Before-Scaling** protocol to eliminate data leakage |
-| **2. SOTA Models & Performance Analytics** | **4 Marks** | • 5 Regressors: Linear Regression (Baseline), Decision Tree, Random Forest, KNN (tuned $k$), XGBoost (SOTA)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
-| **3. UI Deployment & Cross-Platform** | **4 Marks** | • Modern, multi-tab Streamlit Web App (`app.py`)<br>• Real-time predictions with dynamic model switching<br>• Real-time BMI, metabolic burn rate, and equivalency metrics<br>• Live 2D PCA cluster projection of user workouts<br>• Mobile-responsive and cross-platform compatible |
-| **4. Code Quality, Repo & Academic Report** | **4 Marks** | • Modular PEP-8 compliant architecture (`src/`)<br>• Single master pipeline command (`run_pipeline.py`)<br>• Exhaustive academic project report (`PROJECT_REPORT.md`)<br>• 5 peer-reviewed literature citations (2020–2024)<br>• Comprehensive Viva Voce Q&A Cheat Sheet |
+| **1. Data Cleaning & Splitting** | • Automated inner-merge of `exercise.csv` & `calories.csv` on `User_ID` ($N=15,000$ verified zero loss)<br>• Missing values & duplicate checking<br>• Physiological impossibility filtering (body temp, heart rate)<br>• IQR outlier detection and justification<br>• Variance Inflation Factor (VIF) multicollinearity diagnostics<br>• **Strict Split-Before-Scaling** protocol to eliminate data leakage |
+| **2. SOTA Models & Performance Analytics** | • 5 Regressors: Linear Regression (Baseline), Decision Tree, Random Forest, KNN (tuned $k$), XGBoost (SOTA)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
+| **3. UI Deployment & Cross-Platform** | • Modern, multi-tab Streamlit Web App (`app.py`)<br>• Real-time predictions with dynamic model switching<br>• Real-time BMI, metabolic burn rate, and equivalency metrics<br>• Live 2D PCA cluster projection of user workouts<br>• Mobile-responsive and cross-platform compatible |
+| **4. Code Quality, Repo & Academic Report** | • Modular PEP-8 compliant architecture (`src/`)<br>• Single master pipeline command (`run_pipeline.py`)<br>• Exhaustive academic project report (`PROJECT_REPORT.md`)<br>• 5 peer-reviewed literature citations (2020–2024)<br>• Comprehensive Viva Voce Q&A Cheat Sheet |
 
 ---
 
