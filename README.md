@@ -1,6 +1,6 @@
 # Calories Burnt Prediction: Machine Learning System
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://calorie-burnt-prediction.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-v1.4+-orange.svg)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -13,10 +13,8 @@ An end-to-end Machine Learning system that predicts exercise energy expenditure 
 
 The interactive web application is deployed and accessible online:
 
-👉 **[Launch Calorie Burnt Predictor Web App](https://calorie-burnt-prediction.streamlit.app/)**  
-*(Direct link: `https://calorie-burnt-prediction.streamlit.app/`)*
-
-> **Note:** If your Streamlit Cloud deployment assigned a customized subdomain (e.g. `https://calorie-burnt-prediction-gauran404.streamlit.app/`), you can directly access your deployed dashboard there.
+👉 **[Launch Calorie Burnt Predictor Web App](https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/)**  
+*(Direct link: `https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/`)*
 
 ---
 
