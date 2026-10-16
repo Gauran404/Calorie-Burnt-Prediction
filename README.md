@@ -7,10 +7,6 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-Interactive%20UI-ff4b4b.svg)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-An end-to-end Machine Learning project that predicts energy expenditure (calories burnt) during workout sessions using demographic and physiological biometric data. Designed and structured for university/college ML mini-project evaluation (**15/15 Marks Rubric**).
-
----
-
 ## 📌 Project Overview & Evaluation Rubric Alignment
 
 | Evaluation Category | Allocated Marks | Features Implemented in Codebase |
