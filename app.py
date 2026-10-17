@@ -3,12 +3,12 @@
 CALORIES BURNT PREDICTOR & HEALTH INTELLIGENCE SYSTEM
 =============================================================================
 Frontend Modules:
-1. Workout Telemetry & Cardiovascular Zone Classification
+1. User Workout Input & Real-time Calorie Burn Prediction (Random Forest ML)
 2. ML-Powered Exercise Ranking & Personalized Rule-Based Recommender
 3. Clinical Diet & Nutritional Planning (BMR, TDEE, Calorie Target, Macros)
-4. Lifestyle Risk Factor Screening & Preventive Guidelines
+4. Point-to-Point Health & Lifestyle Risk Flagging
 
-Core ML Models: Random Forest Regressor (Ensemble Bagging) from Scikit-Learn
+Core ML Model: Scikit-Learn Random Forest Regressor
 Packages: numpy, pandas, scikit-learn, matplotlib, seaborn, streamlit, joblib
 =============================================================================
 """
@@ -29,7 +29,7 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 
 # Streamlit Page Setup
 st.set_page_config(
-    page_title="Calories Burnt Prediction & Health Intelligence",
+    page_title="Calories Burnt Predictor & Health Intelligence",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -72,27 +72,6 @@ st.markdown("""
         font-size: 1.05rem;
         color: #1A365D;
         line-height: 1.5;
-    }
-    .risk-card-normal {
-        background-color: #F0FFF4;
-        border-left: 4px solid #38A169;
-        padding: 14px;
-        border-radius: 8px;
-        margin-bottom: 12px;
-    }
-    .risk-card-warning {
-        background-color: #FFFAF0;
-        border-left: 4px solid #DD6B20;
-        padding: 14px;
-        border-radius: 8px;
-        margin-bottom: 12px;
-    }
-    .risk-card-danger {
-        background-color: #FFF5F5;
-        border-left: 4px solid #E53E3E;
-        padding: 14px;
-        border-radius: 8px;
-        margin-bottom: 12px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -160,39 +139,9 @@ elif bmi < 30.0:
 else:
     bmi_cat = "Obese"
 
-# 2. Cardiovascular Zone & Workout Type Classification
+# 2. Maximum Heart Rate
 hr_max = int(220 - age)
 hr_pct = round((heart_rate / hr_max) * 100.0, 1)
-
-if hr_pct < 60:
-    hr_zone_name = "Zone 1: Active Recovery (< 60% Max HR)"
-    workout_type_desc = "Active Recovery & Mobility Workout"
-    zone_color = "#3498db"
-elif hr_pct < 70:
-    hr_zone_name = "Zone 2: Aerobic Base & Fat Oxidation (60-70% Max HR)"
-    workout_type_desc = "Steady-State Aerobic Fat-Burning Session"
-    zone_color = "#2ecc71"
-elif hr_pct < 80:
-    hr_zone_name = "Zone 3: Aerobic Tempo & Conditioning (70-80% Max HR)"
-    workout_type_desc = "Cardiovascular Aerobic Tempo Session"
-    zone_color = "#f39c12"
-elif hr_pct < 90:
-    hr_zone_name = "Zone 4: Anaerobic Threshold (80-90% Max HR)"
-    workout_type_desc = "High-Intensity Anaerobic Threshold Training"
-    zone_color = "#e67e22"
-else:
-    hr_zone_name = "Zone 5: Neuromuscular Maximal Effort (> 90% Max HR)"
-    workout_type_desc = "Maximum Effort Sprint & Anaerobic Conditioning"
-    zone_color = "#e74c3c"
-
-if duration < 15:
-    dur_label = "Short Micro-Burst"
-elif duration <= 45:
-    dur_label = "Standard Training Volume"
-else:
-    dur_label = "Prolonged Endurance Volume"
-
-full_workout_classification = f"{workout_type_desc} ({dur_label})"
 
 # 3. Model Prediction on Current Telemetry
 user_df = pd.DataFrame([{
@@ -219,13 +168,13 @@ else:
 
 
 # ---------------------------------------------------------------------------
-# MAIN PAGE: HEADER & TOP METRICS
+# MAIN PAGE: HEADER & TOP 3 METRICS CARDS
 # ---------------------------------------------------------------------------
-st.markdown('<div class="title-banner">Calories Burnt Prediction & Health Intelligence System</div>', unsafe_allow_html=True)
-st.caption("Machine Learning Energy Expenditure Estimation, Cardiovascular Profiling, ML Exercise Ranking & Diet Planning")
+st.markdown('<div class="title-banner">Calories Burnt Prediction & Recommendations</div>', unsafe_allow_html=True)
+st.caption("Machine Learning Energy Expenditure Estimation, Exercise Ranking, Diet Planning & Risk Flags")
 
-# 4 Key Metric Cards
-col_cal, col_rate, col_bmi, col_type = st.columns([1.3, 1, 1, 1.2])
+# 3 Focused Prediction Cards
+col_cal, col_rate, col_bmi = st.columns([1.4, 1, 1])
 
 with col_cal:
     st.markdown(f"""
@@ -253,108 +202,149 @@ with col_bmi:
     </div>
     """, unsafe_allow_html=True)
 
-with col_type:
-    st.markdown(f"""
-    <div style="background-color:#F8F9FA; border-radius:12px; padding:18px; text-align:center; border:1px solid #E0E0E0;">
-        <div style="font-size:1.4rem; font-weight:800; color:{zone_color};">{hr_pct}% HR Max</div>
-        <div style="font-size:0.9rem; font-weight:600; color:#7F8C8D;">Workout Type</div>
-        <div style="margin-top:6px; font-size:0.82rem; font-weight:700; color:#333;">{workout_type_desc}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
 st.markdown("---")
 
 
 # ---------------------------------------------------------------------------
-# TABS INTERFACE: 4 INTEGRATED SYSTEM MODULES
+# RISK FACTORS EVALUATION (POINT-TO-POINT)
 # ---------------------------------------------------------------------------
-tab1, tab2, tab3, tab4 = st.tabs([
-    "Workout Telemetry & Analysis",
-    "ML-Ranked Recommendations",
+risk_items = []
+
+# 1. Cardiovascular Risk
+if hr_pct >= 85.0 or heart_rate >= 165.0:
+    risk_items.append({
+        "type": "error",
+        "title": f"Cardiovascular Strain (Heart Rate: {heart_rate} BPM | {hr_pct}% of Max HR)",
+        "risk": "High strain on heart muscle, rapid cardiovascular fatigue, and elevated blood pressure.",
+        "advice": "Slow down to 120-140 BPM and take a 5-minute cooldown break."
+    })
+elif hr_pct >= 75.0 or heart_rate >= 145.0:
+    risk_items.append({
+        "type": "warning",
+        "title": f"Elevated Heart Rate (Heart Rate: {heart_rate} BPM | {hr_pct}% of Max HR)",
+        "risk": "Approaching anaerobic threshold; rapid lactic acid accumulation.",
+        "advice": "Keep rest intervals between intense sets to prevent early exhaustion."
+    })
+else:
+    risk_items.append({
+        "type": "success",
+        "title": f"Cardiovascular Load: Normal ({heart_rate} BPM | {hr_pct}% of Max HR)",
+        "risk": "Heart rate is within safe aerobic limits.",
+        "advice": "Maintain this steady pace for aerobic conditioning."
+    })
+
+# 2. Body Temperature / Heat Strain
+if body_temp >= 40.0:
+    risk_items.append({
+        "type": "error",
+        "title": f"Heat Strain: High ({body_temp}°C)",
+        "risk": "Risk of exertional hyperthermia, severe dehydration, and heat cramps.",
+        "advice": "Stop exercising immediately, drink cool electrolytes, and rest in a shaded/ventilated area."
+    })
+elif body_temp >= 39.2:
+    risk_items.append({
+        "type": "warning",
+        "title": f"Heat Strain: Elevated ({body_temp}°C)",
+        "risk": "Excessive sweat fluid loss and risk of mild heat exhaustion.",
+        "advice": "Drink 250-500 mL water or electrolytes now; avoid exercising in humid environments."
+    })
+else:
+    risk_items.append({
+        "type": "success",
+        "title": f"Heat Strain: Normal ({body_temp}°C)",
+        "risk": "Body temperature reflects normal exercise heat.",
+        "advice": "Maintain standard hydration during and after workout."
+    })
+
+# 3. Weight / BMI Risk
+if bmi >= 30.0:
+    risk_items.append({
+        "type": "error",
+        "title": f"Metabolic & Joint Risk (Obese: BMI {bmi})",
+        "risk": "High stress on knee/hip joints, plus higher risk of Type 2 Diabetes and hypertension.",
+        "advice": "Choose non-impact cardio (cycling, swimming) to protect joints; maintain a 500 kcal daily deficit."
+    })
+elif bmi >= 25.0:
+    risk_items.append({
+        "type": "warning",
+        "title": f"Metabolic Risk (Overweight: BMI {bmi})",
+        "risk": "Risk of joint wear, high cholesterol, and visceral fat accumulation.",
+        "advice": "Target 45 minutes of moderate cardio 4 days a week with a balanced diet."
+    })
+elif bmi < 18.5:
+    risk_items.append({
+        "type": "warning",
+        "title": f"Underweight Risk (BMI {bmi})",
+        "risk": "Risk of muscle loss, nutrient deficiency, and reduced bone density.",
+        "advice": "Focus on strength training instead of excessive cardio, and eat a 300-500 kcal surplus."
+    })
+else:
+    risk_items.append({
+        "type": "success",
+        "title": f"Metabolic Profile: Healthy (BMI {bmi})",
+        "risk": "Lowest risk category for chronic metabolic conditions.",
+        "advice": "Maintain consistent physical activity and balanced nutrition."
+    })
+
+# 4. Duration / Overtraining Risk
+if duration >= 60.0:
+    risk_items.append({
+        "type": "warning",
+        "title": f"Workout Volume: Long Duration ({duration} min)",
+        "risk": "Glycogen depletion, muscle breakdown, and delayed recovery.",
+        "advice": "Cap high-intensity workouts to 45 minutes; allow 24-48 hours of recovery before retraining."
+    })
+else:
+    risk_items.append({
+        "type": "success",
+        "title": f"Workout Volume: Optimal ({duration} min)",
+        "risk": "Safe duration with low fatigue risk.",
+        "advice": "Safe duration for regular workouts."
+    })
+
+
+# ---------------------------------------------------------------------------
+# TABS INTERFACE: 3 CLEAN MODULES
+# ---------------------------------------------------------------------------
+tab1, tab2, tab3 = st.tabs([
+    "Personalized Recommendations",
     "Diet & Nutrition Plan",
-    "Lifestyle Risk Screening"
+    "Health & Risk Flags"
 ])
 
 
 # ===========================================================================
-# TAB 1: WORKOUT TELEMETRY & ANALYSIS
+# TAB 1: PERSONALIZED RECOMMENDATIONS & ML EXERCISE RANKING
 # ===========================================================================
 with tab1:
-    st.subheader("Cardiovascular Telemetry & Workout Profiling")
-    st.caption("Deep physiological analysis derived from your recorded Heart Rate, Workout Duration, and Body Temperature:")
+    st.subheader("Personalized Recommendations")
 
-    col_t1, col_t2 = st.columns(2)
-
-    with col_t1:
-        st.markdown(f"""
-        **Session Classification:**
-        - **Workout Classification:** {full_workout_classification}
-        - **Cardiovascular Intensity:** {hr_zone_name}
-        - **Session Duration:** {duration} minutes ({dur_label})
-        - **Mean Heart Rate:** {heart_rate} BPM (Age-predicted max: {hr_max} BPM)
-        - **Relative Cardiovascular Strain:** {hr_pct}% of theoretical maximum
-        """)
-
-    with col_t2:
-        # Body Temperature Analysis
-        if body_temp > 40.0:
-            temp_status = "Elevated thermal load (hyperthermic risk)"
-        elif body_temp >= 38.5:
-            temp_status = "Normal exercise-induced thermogenesis"
-        else:
-            temp_status = "Resting / low metabolic baseline temperature"
-
-        st.markdown(f"""
-        **Thermal & Energy Metrics:**
-        - **Core Body Temperature:** {body_temp}°C ({temp_status})
-        - **Total Energy Expended:** {predicted_calories} kcal
-        - **Caloric Burn Velocity:** {burn_rate} kcal/minute
-        - **Primary Energy Substrate:** {"Lipids (Fat Oxidation)" if hr_pct < 70 else "Glycogen (Carbohydrate Metabolism)"}
-        """)
-
-    st.markdown("#### Physiological Cardiovascular Zones Reference")
-    zones_data = [
-        {"Zone": "Zone 1", "HR Range (% Max)": "< 60%", "Intensity": "Very Light", "Primary Benefit": "Active recovery, metabolic waste clearance, joint mobility"},
-        {"Zone": "Zone 2", "HR Range (% Max)": "60% - 70%", "Intensity": "Light to Moderate", "Primary Benefit": "Mitochondrial density, maximal fat oxidation, aerobic base"},
-        {"Zone": "Zone 3", "HR Range (% Max)": "70% - 80%", "Intensity": "Moderate", "Primary Benefit": "Cardiovascular stamina, capillarization, aerobic tempo"},
-        {"Zone": "Zone 4", "HR Range (% Max)": "80% - 90%", "Intensity": "Hard", "Primary Benefit": "Lactate threshold enhancement, high-velocity calorie burn"},
-        {"Zone": "Zone 5", "HR Range (% Max)": "> 90%", "Intensity": "Maximum", "Primary Benefit": "Peak VO2 max, neuromuscular speed, sprint power"}
-    ]
-    st.dataframe(pd.DataFrame(zones_data), hide_index=True, use_container_width=True)
-
-
-# ===========================================================================
-# TAB 2: ML-POWERED EXERCISE RECOMMENDATIONS
-# ===========================================================================
-with tab2:
-    st.subheader("Personalized Exercise Recommendations & ML Ranking Engine")
-
-    # 1. Dynamic Rule-Based Recommendation
+    # 1. Rule-Based Personalized Recommendation
     if bmi >= 25.0:
         if bmi >= 30.0:
             rec_activity = "low-impact cycling or incline walking"
             rec_dur = 45
             rec_freq = 4
             rec_target = 1800
-            rec_rationale = "shield knee and hip joints while maintaining sustained aerobic fat oxidation"
+            rec_rationale = "shield knee joints while maintaining steady fat burn"
         else:
-            rec_activity = "brisk running or rowing"
+            rec_activity = "running or rowing"
             rec_dur = 45
             rec_freq = 4
             rec_target = 1600
-            rec_rationale = "accelerate daily caloric expenditure and stimulate metabolic lipid clearance"
+            rec_rationale = "accelerate daily caloric burn and fat loss"
     elif bmi < 18.5:
-        rec_activity = "moderate bodyweight circuits and swimming"
+        rec_activity = "bodyweight training and swimming"
         rec_dur = 30
         rec_freq = 3
         rec_target = 900
-        rec_rationale = "prevent lean muscle loss and avoid excessive caloric depletion"
+        rec_rationale = "preserve muscle mass and avoid excess calorie depletion"
     else:
-        rec_activity = "interval running and functional circuits"
+        rec_activity = "running or cycling"
         rec_dur = 40
         rec_freq = 4
         rec_target = 1400
-        rec_rationale = "optimize cardiovascular conditioning, metabolic agility, and mitochondrial density"
+        rec_rationale = "maintain cardiovascular fitness and metabolic health"
 
     rule_recommendation = (
         f"Your BMI is {bmi} ({bmi_cat}) and you burn {predicted_calories} kcal in {duration:.0f} min of your current session, "
@@ -364,7 +354,7 @@ with tab2:
 
     st.markdown(f"""
     <div class="rec-box">
-        <strong>Personalized Prescription:</strong><br>
+        <strong>Prescription:</strong><br>
         {rule_recommendation}
     </div>
     """, unsafe_allow_html=True)
@@ -372,20 +362,19 @@ with tab2:
     # 2. Machine Learning Exercise Ranking
     st.markdown("#### Exercise Suggestions Ranked by Calories Burnt Per Minute")
     st.caption(
-        f"Every activity below is evaluated for your exact biometric profile "
-        f"(Age: {age}, Gender: {gender}, Weight: {weight}kg, Height: {height}cm) "
-        f"using our trained Machine Learning Random Forest Regressor on backend:"
+        f"Each activity is evaluated for your profile (Age: {age}, Gender: {gender}, Weight: {weight}kg, Height: {height}cm) "
+        f"using the trained Random Forest ML model:"
     )
 
     exercise_catalog = [
-        {"Activity": "Outdoor Running", "Duration": 30.0, "Heart_Rate": 155.0, "Body_Temp": 39.8, "Focus": "High-intensity aerobic conditioning"},
-        {"Activity": "HIIT Circuit Training", "Duration": 25.0, "Heart_Rate": 165.0, "Body_Temp": 40.0, "Focus": "Maximal anaerobic threshold and afterburn"},
-        {"Activity": "Fast Cycling / Spin", "Duration": 30.0, "Heart_Rate": 135.0, "Body_Temp": 39.2, "Focus": "Cardiorespiratory and lower-body endurance"},
-        {"Activity": "Rowing Machine", "Duration": 30.0, "Heart_Rate": 145.0, "Body_Temp": 39.4, "Focus": "Full-body muscular and cardiovascular power"},
-        {"Activity": "Freestyle Swimming", "Duration": 30.0, "Heart_Rate": 130.0, "Body_Temp": 38.8, "Focus": "Zero-impact aerobic capacity"},
-        {"Activity": "Jump Rope", "Duration": 20.0, "Heart_Rate": 160.0, "Body_Temp": 39.7, "Focus": "Cardio speed and neuromuscular agility"},
-        {"Activity": "Incline Treadmill Walk", "Duration": 40.0, "Heart_Rate": 115.0, "Body_Temp": 38.5, "Focus": "Zone 2 fat oxidation without joint strain"},
-        {"Activity": "Power Yoga / Calisthenics", "Duration": 45.0, "Heart_Rate": 95.0, "Body_Temp": 37.8, "Focus": "Core stability, flexibility and active recovery"}
+        {"Activity": "Outdoor Running", "Duration": 30.0, "Heart_Rate": 155.0, "Body_Temp": 39.8, "Focus": "High-intensity cardio"},
+        {"Activity": "HIIT Circuit Training", "Duration": 25.0, "Heart_Rate": 165.0, "Body_Temp": 40.0, "Focus": "High calorie burn & afterburn"},
+        {"Activity": "Fast Cycling / Spin", "Duration": 30.0, "Heart_Rate": 135.0, "Body_Temp": 39.2, "Focus": "Cardio & leg endurance"},
+        {"Activity": "Rowing Machine", "Duration": 30.0, "Heart_Rate": 145.0, "Body_Temp": 39.4, "Focus": "Full-body workout"},
+        {"Activity": "Freestyle Swimming", "Duration": 30.0, "Heart_Rate": 130.0, "Body_Temp": 38.8, "Focus": "Low-impact endurance"},
+        {"Activity": "Jump Rope", "Duration": 20.0, "Heart_Rate": 160.0, "Body_Temp": 39.7, "Focus": "Agility & quick calorie burn"},
+        {"Activity": "Incline Treadmill Walk", "Duration": 40.0, "Heart_Rate": 115.0, "Body_Temp": 38.5, "Focus": "Joint-friendly fat burn"},
+        {"Activity": "Power Yoga / Calisthenics", "Duration": 45.0, "Heart_Rate": 95.0, "Body_Temp": 37.8, "Focus": "Core strength & mobility"}
     ]
 
     rank_rows = []
@@ -404,10 +393,10 @@ with tab2:
         rank_rows.append({
             "Exercise Modality": ex["Activity"],
             "Duration (min)": ex["Duration"],
-            "Avg Heart Rate (BPM)": ex["Heart_Rate"],
-            "Predicted Energy (kcal)": round(pred_c, 1),
+            "Heart Rate (BPM)": ex["Heart_Rate"],
+            "Predicted Calories (kcal)": round(pred_c, 1),
             "Burn Rate (kcal/min)": b_rate,
-            "Primary Metabolic Focus": ex["Focus"]
+            "Training Focus": ex["Focus"]
         })
 
     df_ranked = pd.DataFrame(rank_rows).sort_values(by="Burn Rate (kcal/min)", ascending=False).reset_index(drop=True)
@@ -417,7 +406,7 @@ with tab2:
     st.dataframe(df_ranked, use_container_width=True)
 
     # Visualization of Burn Rate by Activity
-    fig_bar, ax_bar = plt.subplots(figsize=(8, 4))
+    fig_bar, ax_bar = plt.subplots(figsize=(8, 3.8))
     sns.barplot(
         data=df_ranked.reset_index(),
         x="Burn Rate (kcal/min)",
@@ -425,7 +414,7 @@ with tab2:
         palette="Reds_r",
         ax=ax_bar
     )
-    ax_bar.set_title(f"Predicted Calorie Burn Rate by Exercise (Age: {age}, Weight: {weight}kg)", fontsize=11, fontweight="bold")
+    ax_bar.set_title(f"Predicted Burn Rate by Exercise (Age: {age}, Weight: {weight}kg)", fontsize=11, fontweight="bold")
     ax_bar.set_xlabel("Burn Rate (kcal / minute)", fontsize=10)
     ax_bar.set_ylabel("")
     plt.tight_layout()
@@ -433,11 +422,11 @@ with tab2:
 
 
 # ===========================================================================
-# TAB 3: DIET & NUTRITION PLAN
+# TAB 2: DIET & NUTRITION PLAN
 # ===========================================================================
-with tab3:
-    st.subheader("Targeted Diet & Nutritional Planning")
-    st.caption("Evidence-based metabolic calculations using the Mifflin-St Jeor clinical equation:")
+with tab2:
+    st.subheader("Diet & Nutrition Plan")
+    st.caption("Point-to-point daily nutritional targets based on your calorie expenditure:")
 
     # BMR Calculation (Mifflin-St Jeor)
     if gender == "Male":
@@ -452,19 +441,18 @@ with tab3:
     # Caloric Target based on Goal
     if "Fat Loss" in fitness_goal:
         target_calories = max(1400.0, round(tdee - 450.0, 0))
-        target_desc = "Caloric Deficit Target (-450 kcal/day for sustainable fat loss of ~0.45 kg/week)"
+        target_desc = "Caloric Deficit (-450 kcal/day for ~0.45 kg weekly fat loss)"
         carb_pct, fat_pct = 0.40, 0.30
     elif "Hypertrophy" in fitness_goal:
         target_calories = round(tdee + 350.0, 0)
-        target_desc = "Caloric Surplus Target (+350 kcal/day to support muscle hypertrophy and tissue repair)"
+        target_desc = "Caloric Surplus (+350 kcal/day to support muscle growth)"
         carb_pct, fat_pct = 0.50, 0.25
     else:
         target_calories = tdee
-        target_desc = "Caloric Maintenance Target (Equilibrium with TDEE to sustain current weight and conditioning)"
+        target_desc = "Maintenance (Equal to TDEE to maintain current weight)"
         carb_pct, fat_pct = 0.45, 0.30
 
     # Macronutrient Breakdown
-    # Protein: 2.0g per kg bodyweight
     protein_grams = round(weight * 2.0, 0)
     protein_cals = protein_grams * 4.0
 
@@ -477,156 +465,58 @@ with tab3:
     # Top Nutrition Metrics
     col_n1, col_n2, col_n3, col_n4 = st.columns(4)
     with col_n1:
-        st.metric("Basal Metabolic Rate (BMR)", f"{int(bmr)} kcal/day")
+        st.metric("Basal Metabolic Rate", f"{int(bmr)} kcal")
     with col_n2:
-        st.metric("Total Daily Energy (TDEE)", f"{int(tdee)} kcal/day")
+        st.metric("Total Daily Energy", f"{int(tdee)} kcal")
     with col_n3:
-        st.metric("Daily Calorie Target", f"{int(target_calories)} kcal/day")
+        st.metric("Daily Calorie Target", f"{int(target_calories)} kcal")
     with col_n4:
-        st.metric("Daily Protein Target", f"{int(protein_grams)} g/day")
+        st.metric("Daily Protein Target", f"{int(protein_grams)} g")
 
-    st.markdown(f"**Selected Strategy:** {target_desc}")
+    st.markdown(f"**Strategy:** {target_desc}")
 
-    # Macronutrient Allocation Table
+    # Macronutrient Breakdown Table
     col_macro_tab, col_guidance = st.columns([1.2, 1])
 
     with col_macro_tab:
-        st.markdown("#### Daily Macronutrient Allocation")
+        st.markdown("#### Daily Macronutrient Breakdown")
         macro_df = pd.DataFrame([
-            {"Nutrient": "Protein", "Target (g)": f"{int(protein_grams)} g", "Calories": f"{int(protein_cals)} kcal", "Ratio": f"{round(protein_cals / target_calories * 100, 1)}%", "Role": "Muscle protein synthesis, cellular tissue repair, satiety"},
-            {"Nutrient": "Carbohydrates", "Target (g)": f"{int(carb_grams)} g", "Calories": f"{int(carb_cals)} kcal", "Ratio": f"{round(carb_cals / target_calories * 100, 1)}%", "Role": "Glycogen restoration, aerobic energy, central nervous system fuel"},
-            {"Nutrient": "Healthy Fats", "Target (g)": f"{int(fat_grams)} g", "Calories": f"{int(fat_cals)} kcal", "Ratio": f"{round(fat_cals / target_calories * 100, 1)}%", "Role": "Endocrine hormone production, cell membrane integrity, vitamin uptake"}
+            {"Nutrient": "Protein", "Target": f"{int(protein_grams)} g", "Calories": f"{int(protein_cals)} kcal", "Ratio": f"{round(protein_cals / target_calories * 100, 1)}%", "Purpose": "Muscle repair and satiety"},
+            {"Nutrient": "Carbohydrates", "Target": f"{int(carb_grams)} g", "Calories": f"{int(carb_cals)} kcal", "Ratio": f"{round(carb_cals / target_calories * 100, 1)}%", "Purpose": "Workout energy & glycogen recovery"},
+            {"Nutrient": "Healthy Fats", "Target": f"{int(fat_grams)} g", "Calories": f"{int(fat_cals)} kcal", "Ratio": f"{round(fat_cals / target_calories * 100, 1)}%", "Purpose": "Hormone health & vitamin absorption"}
         ])
         st.dataframe(macro_df, hide_index=True, use_container_width=True)
 
     with col_guidance:
-        st.markdown("#### Structured Meal Timing")
+        st.markdown("#### Meal Timing")
         st.markdown("""
-        - **Pre-Workout (45-60 min prior):** 30-40g complex carbohydrates (oatmeal, banana, whole grain toast) + 300-500 mL water.
-        - **Post-Workout (within 45 min):** 25-35g fast-digesting protein (whey/egg whites/tofu) paired with 40-50g simple carbs to replenish muscle glycogen.
-        - **Hydration Recommendation:** Minimum 3.5 Liters daily, plus 500 mL per 30 minutes of elevated physical exertion.
+        - **Pre-Workout (45 min prior):** 30-40g carbs (banana or oatmeal) + 300 mL water.
+        - **Post-Workout (within 45 min):** 25-30g protein (eggs, chicken, or paneer/tofu) + simple carbs.
+        - **Hydration:** Minimum 3 to 3.5 Liters of water daily.
         """)
 
-    st.markdown("#### Wholesome Food Recommendations")
+    st.markdown("#### Recommended Foods")
     st.markdown("""
-    - **Quality Protein:** Chicken breast, turkey, eggs, wild salmon, paneer, tofu, lentils, Greek yogurt.
-    - **Complex Carbohydrates:** Rolled oats, brown rice, sweet potatoes, quinoa, whole-wheat pita, berries.
-    - **Essential Fats:** Extra virgin olive oil, avocado, raw almonds, walnuts, chia seeds.
+    - **Proteins:** Eggs, chicken breast, paneer, tofu, lentils, Greek yogurt.
+    - **Carbohydrates:** Oats, brown rice, sweet potatoes, bananas, whole-wheat roti/bread.
+    - **Healthy Fats:** Almonds, walnuts, olive oil, chia seeds.
     """)
 
 
 # ===========================================================================
-# TAB 4: LIFESTYLE RISK SCREENING & PREVENTIVE GUIDELINES
+# TAB 3: HEALTH & RISK FLAGS (POINT-TO-POINT)
 # ===========================================================================
-with tab4:
-    st.subheader("Lifestyle & Cardiovascular Risk Screening")
-    st.caption("Automated clinical risk stratification based on recorded physiological parameters:")
+with tab3:
+    st.subheader("Health & Lifestyle Risk Flags")
+    st.caption("Point-to-point risk screening based on your biometric and workout inputs:")
 
-    # 1. Cardiovascular Strain Evaluation
-    if hr_pct >= 88.0 or heart_rate >= 175.0:
-        cv_status = "Elevated Risk - High Cardiovascular Strain"
-        cv_class = "risk-card-danger"
-        cv_condition = "Risk of acute myocardial overexertion, excessive hemodynamic load, or unmonitored tachycardia."
-        cv_advice = "Scale back workout intensity into Zone 2-3 (65-80% HR Max). Implement a 10-minute progressive warmup and cooldown. If dizzy or breathless, pause immediately."
-    elif hr_pct >= 80.0:
-        cv_status = "Moderate Caution - Anaerobic Threshold Strain"
-        cv_class = "risk-card-warning"
-        cv_condition = "High lactate accumulation and substantial cardiac demand; safe for conditioned individuals in interval format."
-        cv_advice = "Ensure rest intervals between high-intensity sets. Limit continuous Zone 4 training to 20-30 minutes."
-    else:
-        cv_status = "Optimal - Healthy Cardiovascular Response"
-        cv_class = "risk-card-normal"
-        cv_condition = "Heart rate remained within safe physiological aerobic conditioning parameters."
-        cv_advice = "Maintain current aerobic pacing to foster long-term cardiovascular health and capillary density."
-
-    # 2. Exertional Heat Strain Evaluation
-    if body_temp >= 40.5:
-        heat_status = "High Risk - Exertional Hyperthermia"
-        heat_class = "risk-card-danger"
-        heat_condition = "Severe heat strain risk, potential heat exhaustion or exertional heat illness."
-        heat_advice = "Cease physical exertion immediately. Hydrate with electrolyte-enriched fluids, rest in a cooled environment, and apply passive cooling."
-    elif body_temp >= 39.8 and duration >= 40.0:
-        heat_status = "Moderate Caution - Elevated Thermal Accumulation"
-        heat_class = "risk-card-warning"
-        heat_condition = "Prolonged core temperature elevation with sweat fluid and electrolyte loss."
-        heat_advice = "Consume 250 mL of water or electrolyte solution every 15-20 minutes. Avoid exercising in unventilated or humid environments."
-    else:
-        heat_status = "Optimal - Regulated Thermal State"
-        heat_class = "risk-card-normal"
-        heat_condition = "Core temperature reflects normal physiological metabolic thermogenesis."
-        heat_advice = "Continue standard hydration practices (500 mL pre-workout and post-workout fluid restoration)."
-
-    # 3. Metabolic & Weight Risk Evaluation
-    if bmi >= 30.0:
-        bmi_status = "Elevated Risk - Class I/II Obesity Indicators"
-        bmi_class = "risk-card-danger"
-        bmi_condition = "Increased predisposition to Type 2 Diabetes, essential hypertension, dyslipidemia, and knee joint osteoarthritis."
-        bmi_advice = "Favor non-weight-bearing cardiovascular exercise (indoor cycling, swimming, rowing) to preserve joint cartilage. Pair with a monitored 500 kcal daily deficit."
-    elif bmi >= 25.0:
-        bmi_status = "Moderate Risk - Overweight Metabolic Profile"
-        bmi_class = "risk-card-warning"
-        bmi_condition = "Moderate predisposition to visceral adiposity, reduced insulin sensitivity, and mild hypertension."
-        bmi_advice = "Aim for 150-250 minutes of weekly aerobic exercise combined with resistance training and glycemic management."
-    elif bmi < 18.5:
-        bmi_status = "Caution - Underweight / Lean Tissue Deficiency"
-        bmi_class = "risk-card-warning"
-        bmi_condition = "Risk of relative energy deficiency, diminished muscle mass, lowered bone mineral density, and immune suppression."
-        bmi_advice = "Prioritize progressive resistance training for hypertrophy; avoid excessive long-distance cardio; adopt a 300-500 kcal daily caloric surplus."
-    else:
-        bmi_status = "Optimal - Healthy Weight Category"
-        bmi_class = "risk-card-normal"
-        bmi_condition = "Associated with low chronic metabolic disease incidence and optimal physiological resilience."
-        bmi_advice = "Sustain consistent physical conditioning and balanced whole-food nutrition."
-
-    # 4. Overtraining & Recovery Deficit
-    if duration >= 60.0 and heart_rate >= 150.0:
-        over_status = "Elevated Risk - High Overtraining Accumulation"
-        over_class = "risk-card-danger"
-        over_condition = "Elevated systemic cortisol, muscle protein catabolism, central nervous system fatigue, and blunted recovery."
-        over_advice = "Cap high-intensity cardiovascular sessions at 45 minutes. Guarantee 48 hours of recovery between strenuous sessions and sleep 7-9 hours nightly."
-    elif duration >= 45.0 and heart_rate >= 140.0:
-        over_status = "Moderate Caution - Demanding Training Volume"
-        over_class = "risk-card-warning"
-        over_condition = "Substantial glycogen depletion and delayed muscle soreness expected."
-        over_advice = "Incorporate structured post-workout carbohydrate replenishment and active mobility recovery."
-    else:
-        over_status = "Optimal - Sustainable Session Volume"
-        over_class = "risk-card-normal"
-        over_condition = "Workout duration and strain align with positive physiological adaptation."
-        over_advice = "Standard recovery protocol (24-48 hours before retraining the same muscle groups)."
-
-    # Render 4 Clinical Cards
-    st.markdown(f"""
-    <div class="{cv_class}">
-        <h4>1. Cardiovascular Load: {cv_status}</h4>
-        <p><strong>Linked Condition:</strong> {cv_condition}</p>
-        <p><strong>Prevention Advice:</strong> {cv_advice}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div class="{heat_class}">
-        <h4>2. Thermal & Heat Strain: {heat_status}</h4>
-        <p><strong>Linked Condition:</strong> {heat_condition}</p>
-        <p><strong>Prevention Advice:</strong> {heat_advice}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div class="{bmi_class}">
-        <h4>3. Metabolic Profile (BMI): {bmi_status}</h4>
-        <p><strong>Linked Condition:</strong> {bmi_condition}</p>
-        <p><strong>Prevention Advice:</strong> {bmi_advice}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div class="{over_class}">
-        <h4>4. Volume & Recovery Load: {over_status}</h4>
-        <p><strong>Linked Condition:</strong> {over_condition}</p>
-        <p><strong>Prevention Advice:</strong> {over_advice}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    for item in risk_items:
+        if item["type"] == "error":
+            st.error(f"**{item['title']}**\n- **Risk:** {item['risk']}\n- **Advice:** {item['advice']}")
+        elif item["type"] == "warning":
+            st.warning(f"**{item['title']}**\n- **Risk:** {item['risk']}\n- **Advice:** {item['advice']}")
+        else:
+            st.success(f"**{item['title']}**\n- **Risk:** {item['risk']}\n- **Advice:** {item['advice']}")
 
 
 # Footer

@@ -24,11 +24,10 @@ The interactive web application is deployed and accessible online:
 | :--- | :--- |
 | **1. Data Cleaning & Splitting** | • Automated inner-merge of `exercise.csv` & `calories.csv` on `User_ID` ($N=15,000$ verified zero loss)<br>• Missing values & duplicate checking<br>• Physiological impossibility filtering (body temp, heart rate)<br>• Variance Inflation Factor (VIF) multicollinearity diagnostics<br>• **Strict Split-Before-Scaling** protocol to eliminate data leakage |
 | **2. Supervised ML Models & CV** | • 4 Syllabus Regressors: Linear Regression (Baseline), Decision Tree, Random Forest (Best Model, $R^2=0.9980$), KNN (tuned $k=11$)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
-| **3. Workout Classification** | • Analysis of theoretical max heart rate ($HR_{\max} = 220 - \text{Age}$)<br>• Cardiovascular training zone classification (Zone 1 Active Recovery to Zone 5 Maximal Effort)<br>• Workout duration volume categorization (Micro-burst, Standard, Prolonged Endurance)<br>• Exertional thermal metabolic state tracking |
-| **4. ML-Ranked Recommendations** | • **Rule-Based Recommender:** Dynamic personalized prescriptions based on BMI, session calories burnt, and weekly expenditure targets<br>• **ML-Powered Ranking Engine:** Evaluates exercise modalities for the user's biometric profile via the trained Random Forest model and ranks by caloric burn rate (kcal/min) |
-| **5. Clinical Diet & Nutrition Engine** | • Basal Metabolic Rate (BMR) calculated via Mifflin-St Jeor clinical equation<br>• Total Daily Energy Expenditure (TDEE) and goal-adjusted caloric targets (Deficit, Maintenance, Surplus)<br>• Gram-level macronutrient breakdown ($2.0\text{ g/kg}$ protein, complex carbs, essential fats)<br>• Structured pre/post-workout meal timing and hydration guidance |
-| **6. Lifestyle Risk Screening** | • Stratification across 4 clinical physiological domains: Cardiovascular Strain, Exertional Heat Strain, Metabolic Profile (BMI), and Overtraining Volume<br>• Automated condition linkage and clinical prevention advice |
-| **7. Production Deployment** | • Responsive Streamlit Cloud Web Application (`app.py`)<br>• Fully documented, verified Jupyter Notebook (`Calories_Burnt_Prediction.ipynb`)<br>• Publication-grade academic synopsis report (`SYNOPSIS_REPORT.pdf`) |
+| **3. ML-Ranked Recommendations** | • **Rule-Based Recommender:** Dynamic personalized prescriptions based on BMI, session calories burnt, and weekly expenditure targets<br>• **ML-Powered Ranking Engine:** Evaluates exercise modalities for the user's biometric profile via the trained Random Forest model and ranks by caloric burn rate (kcal/min) |
+| **4. Clinical Diet & Nutrition Engine** | • Basal Metabolic Rate (BMR) calculated via Mifflin-St Jeor clinical equation<br>• Total Daily Energy Expenditure (TDEE) and goal-adjusted caloric targets (Deficit, Maintenance, Surplus)<br>• Gram-level macronutrient breakdown ($2.0\text{ g/kg}$ protein, complex carbs, essential fats)<br>• Structured pre/post-workout meal timing and hydration guidance |
+| **5. Point-to-Point Risk Flagging** | • Instant, point-to-point risk alerts across 4 domains: Cardiovascular Strain, Thermal/Heat Strain, Metabolic/BMI Profile, and Overtraining Volume<br>• Direct risk identification and actionable preventive advice without unnecessary theoretical clutter |
+| **6. Production Deployment** | • Responsive Streamlit Cloud Web Application (`app.py`)<br>• Fully documented, verified Jupyter Notebook (`Calories_Burnt_Prediction.ipynb`)<br>• Publication-grade academic synopsis report (`SYNOPSIS_REPORT.pdf`) |
 
 ---
 
@@ -100,33 +99,25 @@ Open your browser at `http://localhost:8501`.
 
 ## System Architecture & Features
 
-### 1. Workout Telemetry & Cardiovascular Classification
-- Computes theoretical maximum heart rate: $HR_{\max} = 220 - \text{Age}$.
-- Evaluates cardiovascular load into 5 intensity tiers:
-  - **Zone 1 (< 60% HR Max):** Active Recovery & Metabolic Clearing.
-  - **Zone 2 (60-70% HR Max):** Aerobic Base & Maximal Lipid Oxidation.
-  - **Zone 3 (70-80% HR Max):** Aerobic Tempo & Cardiovascular Endurance.
-  - **Zone 4 (80-90% HR Max):** Anaerobic Threshold Conditioning.
-  - **Zone 5 (> 90% HR Max):** Neuromuscular Maximal Sprint Effort.
-- Tracks exertional thermal response (Normal exercise thermogenesis vs. hyperthermic stress).
-
-### 2. ML-Powered Exercise Ranking & Personalized Recommender
+### 1. ML-Powered Exercise Ranking & Personalized Recommender
 - **Dynamic Rule-Based Prescription:** Synthesizes BMI category, current session caloric expenditure, and fitness objectives:
-  - *Example:* "Your BMI is 27.2 (Overweight) and you burn 200 kcal in 30 min of your current session, so try 45 min of brisk running 4 days a week to accelerate daily caloric expenditure (Weekly Target: 1600 kcal)."
+  - *Example:* "Your BMI is 27.2 (Overweight) and you burn 200 kcal in 30 min of your current session, so try 45 min of running 4 days a week to accelerate daily caloric burn and fat loss (Weekly Target: 1600 kcal)."
 - **ML Exercise Ranking:** Feeds user-specific biometrics (Age, Gender, Height, Weight) combined with standard exercise telemetry profiles through our trained **Random Forest Regressor** to predict energy expenditure and sort activities by **Burn Rate (kcal/min)**.
 
-### 3. Targeted Diet & Nutrition Engine
+### 2. Targeted Diet & Nutrition Engine
 - **BMR:** Calculated using the Mifflin-St Jeor clinical equation:
   - Men: $10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} + 5$
   - Women: $10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} - 161$
 - **TDEE:** Baseline metabolic rate scaled by activity factor ($1.35$) plus measured session caloric burn.
 - **Macronutrient Gram Targets:** High-protein allocation ($2.0\text{ g/kg}$ bodyweight), complex carbohydrates for glycogen replenishment, and healthy fats for endocrine support.
+- **Structured Meal Timing:** Point-to-point practical advice on pre/post-workout nutrition and hydration.
 
-### 4. Lifestyle Risk Stratification & Clinical Advice
-- **Cardiovascular Strain:** Flags heart rates $\ge 88\% HR_{\max}$ or $\ge 175\text{ BPM}$; links to acute myocardial fatigue and advises progressive warmup/cooldown.
-- **Exertional Heat Strain:** Flags core temperature $\ge 40.0^\circ\text{C}$; links to heat exhaustion and advises electrolyte rehydration and thermal relief.
-- **Metabolic Profile (BMI):** Stratifies Underweight ($<18.5$), Normal ($18.5-24.9$), Overweight ($25-29.9$), and Obese ($\ge 30$); links to Type 2 Diabetes, hypertension, and joint osteoarthritis, advising non-impact modalities for joint preservation.
-- **Overtraining Volume:** Flags duration $\ge 60\text{ min}$ at heart rates $\ge 150\text{ BPM}$; links to hypercortisolemia and recommends 48-hour recovery spacing.
+### 3. Point-to-Point Health & Lifestyle Risk Flags
+Direct, actionable risk flags without theoretical essays:
+- **Cardiovascular Strain:** Flags heart rates $\ge 145\text{ BPM}$ or $\ge 75\% HR_{\max}$; alerts to cardiac fatigue and recommends moderation.
+- **Heat Strain:** Flags core temperature $\ge 39.2^\circ\text{C}$; alerts to sweat dehydration and recommends electrolyte fluid intake.
+- **Metabolic Profile (BMI):** Alerts to joint stress and metabolic risks if BMI is elevated; suggests non-impact cardio.
+- **Overtraining Volume:** Flags sessions $\ge 60\text{ min}$; alerts to glycogen depletion and advises recovery spacing.
 
 ---
 
