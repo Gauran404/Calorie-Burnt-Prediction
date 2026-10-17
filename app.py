@@ -4,8 +4,8 @@ CALORIES BURNT PREDICTOR & HEALTH INTELLIGENCE SYSTEM
 =============================================================================
 Frontend Modules:
 1. User Workout Input & Real-time Calorie Burn Prediction (Random Forest ML)
-2. ML-Powered Exercise Ranking & Personalized Rule-Based Recommender
-3. Clinical Diet & Nutritional Planning (BMR, TDEE, Calorie Target, Macros)
+2. ML-Powered Exercise Ranking & Dynamic Personalized Prescription
+3. Diet & Nutrition Plan (Target Daily Protein, Carbs & Food Recommendations)
 4. Point-to-Point Health & Lifestyle Risk Flagging
 
 Core ML Model: Scikit-Learn Random Forest Regressor
@@ -71,7 +71,14 @@ st.markdown("""
         margin-bottom: 18px;
         font-size: 1.05rem;
         color: #1A365D;
-        line-height: 1.5;
+        line-height: 1.6;
+    }
+    .diet-box {
+        background-color: #F8F9FA;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 15px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -119,7 +126,7 @@ fitness_goal = st.sidebar.selectbox(
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### Workout Activity Telemetry")
-duration = st.sidebar.number_input("Workout Duration (Minutes)", min_value=1.0, max_value=120.0, value=25.0, step=0.5)
+duration = st.sidebar.number_input("Workout Duration (Minutes)", min_value=1.0, max_value=180.0, value=25.0, step=0.5)
 heart_rate = st.sidebar.number_input("Heart Rate (BPM)", min_value=40.0, max_value=220.0, value=125.0, step=1.0)
 body_temp = st.sidebar.number_input("Body Temperature (°C)", min_value=35.0, max_value=44.0, value=39.5, step=0.1)
 
@@ -144,24 +151,28 @@ hr_max = int(220 - age)
 hr_pct = round((heart_rate / hr_max) * 100.0, 1)
 
 # 3. Model Prediction on Current Telemetry
+# Training set max duration is 30 min. For sessions > 30 min, scale proportionally with session duration.
+eval_dur = min(duration, 30.0)
+dur_multiplier = (duration / eval_dur) if duration > 30.0 else 1.0
+
 user_df = pd.DataFrame([{
     "Gender": gender_val,
     "Age": int(age),
     "Height": float(height),
     "Weight": float(weight),
-    "Duration": float(duration),
-    "Heart_Rate": float(heart_rate),
-    "Body_Temp": float(body_temp)
+    "Duration": float(eval_dur),
+    "Heart_Rate": float(min(heart_rate, 128.0)),
+    "Body_Temp": float(min(body_temp, 41.5))
 }])
 
-predicted_calories = max(0.0, float(model.predict(user_df)[0]))
-predicted_calories = round(predicted_calories, 1)
+base_predicted = max(0.0, float(model.predict(user_df)[0]))
+predicted_calories = round(base_predicted * dur_multiplier, 1)
 burn_rate = round(predicted_calories / max(duration, 0.1), 1)
 
 # Intensity Tier
 if predicted_calories < 50:
     intensity_label, intensity_color = "Low Intensity", "#3498db"
-elif predicted_calories <= 150:
+elif predicted_calories <= 180:
     intensity_label, intensity_color = "Moderate Cardio", "#f39c12"
 else:
     intensity_label, intensity_color = "High Intensity Effort", "#e74c3c"
@@ -319,37 +330,61 @@ tab1, tab2, tab3 = st.tabs([
 with tab1:
     st.subheader("Personalized Recommendations")
 
-    # 1. Rule-Based Personalized Recommendation
-    if bmi >= 25.0:
-        if bmi >= 30.0:
-            rec_activity = "low-impact cycling or incline walking"
-            rec_dur = 45
-            rec_freq = 4
-            rec_target = 1800
-            rec_rationale = "shield knee joints while maintaining steady fat burn"
-        else:
-            rec_activity = "running or rowing"
-            rec_dur = 45
-            rec_freq = 4
-            rec_target = 1600
-            rec_rationale = "accelerate daily caloric burn and fat loss"
-    elif bmi < 18.5:
-        rec_activity = "bodyweight training and swimming"
-        rec_dur = 30
-        rec_freq = 3
-        rec_target = 900
-        rec_rationale = "preserve muscle mass and avoid excess calorie depletion"
-    else:
+    # 1. Truly Dynamic Rule-Based Recommendation based on Duration, HR, and BMI
+    # Analyze Heart Rate Intensity
+    if heart_rate < 100:
+        hr_feedback = f"Your heart rate ({heart_rate} BPM) is light. To increase calorie burn, push your pace into 125-140 BPM."
+        rec_activity = "brisk running or rowing"
+        rec_dur = 35
+        rec_freq = 4
+    elif heart_rate <= 140:
+        hr_feedback = f"Your heart rate ({heart_rate} BPM) is in an optimal aerobic fat-burning zone."
         rec_activity = "running or cycling"
         rec_dur = 40
         rec_freq = 4
-        rec_target = 1400
-        rec_rationale = "maintain cardiovascular fitness and metabolic health"
+    else:
+        hr_feedback = f"Your heart rate ({heart_rate} BPM) is very high (anaerobic zone). Limit continuous threshold training to prevent early exhaustion."
+        rec_activity = "interval training (HIIT or spin cycling) with 2-minute active recovery breaks"
+        rec_dur = 25
+        rec_freq = 3
+
+    # Analyze Duration
+    if duration > 60:
+        dur_feedback = f"Because {duration:.0f} min is a prolonged session, capping workouts at 45-50 min at higher cadence will protect joints and avoid muscle breakdown."
+        rec_dur = 45
+        rec_freq = 3
+    elif duration < 20:
+        dur_feedback = f"Your current session is short ({duration:.0f} min). Stepping up to 30-40 min builds deeper stamina."
+        rec_dur = 35
+        rec_freq = 5
+    else:
+        dur_feedback = f"Your current session duration ({duration:.0f} min) is well balanced for conditioning."
+
+    # Analyze BMI constraints
+    if bmi >= 30.0:
+        rec_activity = "low-impact cycling, incline walking, or swimming"
+        rec_rationale = "shield knee joints while maximizing fat oxidation"
+        weekly_target = 1800
+    elif bmi >= 25.0:
+        rec_activity = "moderate cycling, rowing, or jog-walk intervals"
+        rec_rationale = "accelerate daily fat loss and improve insulin sensitivity"
+        weekly_target = 1600
+    elif bmi < 18.5:
+        rec_activity = "bodyweight circuits and light swimming"
+        rec_dur = 25
+        rec_freq = 3
+        rec_rationale = "prevent muscle catabolism and preserve lean tissue"
+        weekly_target = 900
+    else:
+        rec_rationale = "maintain peak cardiovascular endurance and metabolic conditioning"
+        weekly_target = 1400
 
     rule_recommendation = (
-        f"Your BMI is {bmi} ({bmi_cat}) and you burn {predicted_calories} kcal in {duration:.0f} min of your current session, "
-        f"so try {rec_dur} min of {rec_activity} {rec_freq} days a week to {rec_rationale} "
-        f"(Weekly Target: {rec_target} kcal)."
+        f"Your BMI is {bmi} ({bmi_cat}) and you burned {predicted_calories} kcal in {duration:.0f} min "
+        f"at an average heart rate of {heart_rate} BPM ({burn_rate} kcal/min). "
+        f"{hr_feedback} {dur_feedback} "
+        f"Prescription: Try {rec_dur} min of {rec_activity} {rec_freq} days a week to {rec_rationale} "
+        f"(Weekly Target: {weekly_target} kcal)."
     )
 
     st.markdown(f"""
@@ -360,21 +395,22 @@ with tab1:
     """, unsafe_allow_html=True)
 
     # 2. Machine Learning Exercise Ranking
-    st.markdown("#### Exercise Suggestions Ranked by Calories Burnt Per Minute")
+    st.markdown(f"#### Exercise Suggestions Ranked by Calories Burnt for Your Profile ({duration:.0f} min Session)")
     st.caption(
-        f"Each activity is evaluated for your profile (Age: {age}, Gender: {gender}, Weight: {weight}kg, Height: {height}cm) "
+        f"Predictions evaluated for your profile (Age: {age}, Gender: {gender}, Weight: {weight}kg, Height: {height}cm, Duration: {duration:.0f} min) "
         f"using the trained Random Forest ML model:"
     )
 
+    # Realistic physiological profiles within training distribution range (HR 75-125 BPM)
     exercise_catalog = [
-        {"Activity": "Outdoor Running", "Duration": 30.0, "Heart_Rate": 155.0, "Body_Temp": 39.8, "Focus": "High-intensity cardio"},
-        {"Activity": "HIIT Circuit Training", "Duration": 25.0, "Heart_Rate": 165.0, "Body_Temp": 40.0, "Focus": "High calorie burn & afterburn"},
-        {"Activity": "Fast Cycling / Spin", "Duration": 30.0, "Heart_Rate": 135.0, "Body_Temp": 39.2, "Focus": "Cardio & leg endurance"},
-        {"Activity": "Rowing Machine", "Duration": 30.0, "Heart_Rate": 145.0, "Body_Temp": 39.4, "Focus": "Full-body workout"},
-        {"Activity": "Freestyle Swimming", "Duration": 30.0, "Heart_Rate": 130.0, "Body_Temp": 38.8, "Focus": "Low-impact endurance"},
-        {"Activity": "Jump Rope", "Duration": 20.0, "Heart_Rate": 160.0, "Body_Temp": 39.7, "Focus": "Agility & quick calorie burn"},
-        {"Activity": "Incline Treadmill Walk", "Duration": 40.0, "Heart_Rate": 115.0, "Body_Temp": 38.5, "Focus": "Joint-friendly fat burn"},
-        {"Activity": "Power Yoga / Calisthenics", "Duration": 45.0, "Heart_Rate": 95.0, "Body_Temp": 37.8, "Focus": "Core strength & mobility"}
+        {"Activity": "HIIT Circuit Training", "HR": 124.0, "Temp": 40.8, "Focus": "High-intensity anaerobic afterburn"},
+        {"Activity": "Jump Rope", "HR": 120.0, "Temp": 40.7, "Focus": "Cardio agility & fast calorie burn"},
+        {"Activity": "Outdoor Running", "HR": 118.0, "Temp": 40.6, "Focus": "Aerobic endurance & leg power"},
+        {"Activity": "Rowing Machine", "HR": 112.0, "Temp": 40.4, "Focus": "Full-body muscular cardio"},
+        {"Activity": "Fast Cycling / Spin", "HR": 108.0, "Temp": 40.2, "Focus": "Lower-body stamina & joint safety"},
+        {"Activity": "Freestyle Swimming", "HR": 102.0, "Temp": 39.8, "Focus": "Zero-impact cardiovascular capacity"},
+        {"Activity": "Incline Treadmill Walk", "HR": 92.0, "Temp": 39.4, "Focus": "Zone 2 fat oxidation without joint strain"},
+        {"Activity": "Power Yoga / Calisthenics", "HR": 80.0, "Temp": 38.6, "Focus": "Core stability, flexibility & light burn"}
     ]
 
     rank_rows = []
@@ -384,17 +420,18 @@ with tab1:
             "Age": int(age),
             "Height": float(height),
             "Weight": float(weight),
-            "Duration": ex["Duration"],
-            "Heart_Rate": ex["Heart_Rate"],
-            "Body_Temp": ex["Body_Temp"]
+            "Duration": float(eval_dur),
+            "Heart_Rate": ex["HR"],
+            "Body_Temp": ex["Temp"]
         }
-        pred_c = max(0.0, float(model.predict(pd.DataFrame([row_feat]))[0]))
-        b_rate = round(pred_c / ex["Duration"], 2)
+        pred_base = max(0.0, float(model.predict(pd.DataFrame([row_feat]))[0]))
+        pred_scaled = round(pred_base * dur_multiplier, 1)
+        b_rate = round(pred_scaled / max(duration, 0.1), 2)
         rank_rows.append({
             "Exercise Modality": ex["Activity"],
-            "Duration (min)": ex["Duration"],
-            "Heart Rate (BPM)": ex["Heart_Rate"],
-            "Predicted Calories (kcal)": round(pred_c, 1),
+            "Duration (min)": int(duration),
+            "Heart Rate (BPM)": int(ex["HR"]),
+            "Predicted Calories (kcal)": pred_scaled,
             "Burn Rate (kcal/min)": b_rate,
             "Training Focus": ex["Focus"]
         })
@@ -414,7 +451,7 @@ with tab1:
         palette="Reds_r",
         ax=ax_bar
     )
-    ax_bar.set_title(f"Predicted Burn Rate by Exercise (Age: {age}, Weight: {weight}kg)", fontsize=11, fontweight="bold")
+    ax_bar.set_title(f"Predicted Burn Rate by Exercise ({duration:.0f} min Session | Weight: {weight}kg)", fontsize=11, fontweight="bold")
     ax_bar.set_xlabel("Burn Rate (kcal / minute)", fontsize=10)
     ax_bar.set_ylabel("")
     plt.tight_layout()
@@ -426,7 +463,7 @@ with tab1:
 # ===========================================================================
 with tab2:
     st.subheader("Diet & Nutrition Plan")
-    st.caption("Point-to-point daily nutritional targets based on your calorie expenditure:")
+    st.caption("Daily protein, carbohydrate and caloric targets for your body weight and exercise:")
 
     # BMR Calculation (Mifflin-St Jeor)
     if gender == "Male":
@@ -441,65 +478,74 @@ with tab2:
     # Caloric Target based on Goal
     if "Fat Loss" in fitness_goal:
         target_calories = max(1400.0, round(tdee - 450.0, 0))
-        target_desc = "Caloric Deficit (-450 kcal/day for ~0.45 kg weekly fat loss)"
+        target_desc = "Caloric Deficit (-450 kcal/day for fat loss)"
         carb_pct, fat_pct = 0.40, 0.30
     elif "Hypertrophy" in fitness_goal:
         target_calories = round(tdee + 350.0, 0)
-        target_desc = "Caloric Surplus (+350 kcal/day to support muscle growth)"
+        target_desc = "Caloric Surplus (+350 kcal/day for muscle growth)"
         carb_pct, fat_pct = 0.50, 0.25
     else:
         target_calories = tdee
-        target_desc = "Maintenance (Equal to TDEE to maintain current weight)"
+        target_desc = "Maintenance (Balanced with daily expenditure)"
         carb_pct, fat_pct = 0.45, 0.30
 
-    # Macronutrient Breakdown
-    protein_grams = round(weight * 2.0, 0)
-    protein_cals = protein_grams * 4.0
+    # Macronutrient Calculations
+    # Protein: 2.0g per kg of bodyweight
+    protein_grams = int(round(weight * 2.0, 0))
+    protein_cals = protein_grams * 4
 
-    fat_cals = round(target_calories * fat_pct, 0)
-    fat_grams = round(fat_cals / 9.0, 0)
+    fat_cals = int(round(target_calories * fat_pct, 0))
+    fat_grams = int(round(fat_cals / 9.0, 0))
 
-    carb_cals = max(0.0, target_calories - protein_cals - fat_cals)
-    carb_grams = round(carb_cals / 4.0, 0)
+    carb_cals = max(0, int(round(target_calories - protein_cals - fat_cals, 0)))
+    carb_grams = int(round(carb_cals / 4.0, 0))
 
-    # Top Nutrition Metrics
-    col_n1, col_n2, col_n3, col_n4 = st.columns(4)
+    # Top Nutrition Metric Cards
+    col_n1, col_n2, col_n3 = st.columns(3)
     with col_n1:
-        st.metric("Basal Metabolic Rate", f"{int(bmr)} kcal")
+        st.metric("Daily Protein Needed", f"{protein_grams} g / day")
     with col_n2:
-        st.metric("Total Daily Energy", f"{int(tdee)} kcal")
+        st.metric("Daily Carbs Needed", f"{carb_grams} g / day")
     with col_n3:
-        st.metric("Daily Calorie Target", f"{int(target_calories)} kcal")
-    with col_n4:
-        st.metric("Daily Protein Target", f"{int(protein_grams)} g")
+        st.metric("Daily Caloric Target", f"{int(target_calories)} kcal / day")
 
-    st.markdown(f"**Strategy:** {target_desc}")
+    st.markdown(f"**Objective:** {target_desc} | Healthy Fats: **{fat_grams} g / day**")
 
-    # Macronutrient Breakdown Table
-    col_macro_tab, col_guidance = st.columns([1.2, 1])
-
-    with col_macro_tab:
-        st.markdown("#### Daily Macronutrient Breakdown")
-        macro_df = pd.DataFrame([
-            {"Nutrient": "Protein", "Target": f"{int(protein_grams)} g", "Calories": f"{int(protein_cals)} kcal", "Ratio": f"{round(protein_cals / target_calories * 100, 1)}%", "Purpose": "Muscle repair and satiety"},
-            {"Nutrient": "Carbohydrates", "Target": f"{int(carb_grams)} g", "Calories": f"{int(carb_cals)} kcal", "Ratio": f"{round(carb_cals / target_calories * 100, 1)}%", "Purpose": "Workout energy & glycogen recovery"},
-            {"Nutrient": "Healthy Fats", "Target": f"{int(fat_grams)} g", "Calories": f"{int(fat_cals)} kcal", "Ratio": f"{round(fat_cals / target_calories * 100, 1)}%", "Purpose": "Hormone health & vitamin absorption"}
-        ])
-        st.dataframe(macro_df, hide_index=True, use_container_width=True)
-
-    with col_guidance:
-        st.markdown("#### Meal Timing")
-        st.markdown("""
-        - **Pre-Workout (45 min prior):** 30-40g carbs (banana or oatmeal) + 300 mL water.
-        - **Post-Workout (within 45 min):** 25-30g protein (eggs, chicken, or paneer/tofu) + simple carbs.
-        - **Hydration:** Minimum 3 to 3.5 Liters of water daily.
-        """)
-
-    st.markdown("#### Recommended Foods")
+    # Section 1: Protein Breakdown & Foods to Eat
+    st.markdown("---")
+    st.markdown(f"### 1. Protein Needed: **{protein_grams} g daily**")
+    st.caption(f"Based on 2.0g per kg body weight ({weight}kg) for muscle preservation and recovery:")
     st.markdown("""
-    - **Proteins:** Eggs, chicken breast, paneer, tofu, lentils, Greek yogurt.
-    - **Carbohydrates:** Oats, brown rice, sweet potatoes, bananas, whole-wheat roti/bread.
-    - **Healthy Fats:** Almonds, walnuts, olive oil, chia seeds.
+    **Foods to consume to reach your daily protein target:**
+    - **Chicken Breast or Fish (150-200g):** provides **45-55g** protein
+    - **Eggs (3 whole eggs or egg whites):** provides **18-20g** protein
+    - **Paneer or Tofu (150g):** provides **28-30g** protein
+    - **Cooked Dal / Lentils / Chickpeas (1 cup / 200g):** provides **15-18g** protein
+    - **Greek Yogurt or Curd (1 bowl / 200g):** provides **15-20g** protein
+    - **Whey Protein or Soya Chunks (1 scoop / 40g):** provides **24-26g** protein
+    - **Almonds / Peanuts (1 handful / 30g):** provides **6-8g** protein
+    """)
+
+    # Section 2: Carbohydrate Breakdown & Foods to Eat
+    st.markdown("---")
+    st.markdown(f"### 2. Carbohydrates Needed: **{carb_grams} g daily**")
+    st.caption("To replenish glycogen stores, sustain workout stamina, and prevent fatigue:")
+    st.markdown("""
+    **Foods to consume to reach your daily carbohydrate target:**
+    - **Cooked Rice (White or Brown, 1.5 cups):** provides **65-70g** carbs
+    - **Whole Wheat Roti / Chapati (2-3 rotis):** provides **45-55g** carbs
+    - **Rolled Oats (1 bowl / 60g raw):** provides **40g** carbs
+    - **Bananas or Apples (2 medium fruits):** provides **45-50g** carbs
+    - **Sweet Potato or Boiled Potato (1 medium):** provides **25-30g** carbs
+    - **Whole Grain Bread (2 slices):** provides **25-30g** carbs
+    """)
+
+    # Section 3: Healthy Fats & Hydration
+    st.markdown("---")
+    st.markdown(f"### 3. Healthy Fats & Hydration: **{fat_grams} g fats daily**")
+    st.markdown("""
+    - **Healthy Fat Sources:** 1-2 tablespoons olive oil/ghee (15-20g), 1 handful raw walnuts/almonds (12-15g), 1 spoon chia or flax seeds (5g).
+    - **Daily Water Intake:** Minimum **3.5 Liters of water daily**, plus 500 mL following intense exercise.
     """)
 
 
