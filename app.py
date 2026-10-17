@@ -442,21 +442,6 @@ with tab1:
 
     st.dataframe(df_ranked, use_container_width=True)
 
-    # Visualization of Burn Rate by Activity
-    fig_bar, ax_bar = plt.subplots(figsize=(8, 3.8))
-    sns.barplot(
-        data=df_ranked.reset_index(),
-        x="Burn Rate (kcal/min)",
-        y="Exercise Modality",
-        palette="Reds_r",
-        ax=ax_bar
-    )
-    ax_bar.set_title(f"Predicted Burn Rate by Exercise ({duration:.0f} min Session | Weight: {weight}kg)", fontsize=11, fontweight="bold")
-    ax_bar.set_xlabel("Burn Rate (kcal / minute)", fontsize=10)
-    ax_bar.set_ylabel("")
-    plt.tight_layout()
-    st.pyplot(fig_bar)
-
 
 # ===========================================================================
 # TAB 2: DIET & NUTRITION PLAN
