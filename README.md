@@ -1,48 +1,51 @@
-# Calories Burnt Prediction: Machine Learning System
+# Calories Burnt Prediction & Health Intelligence System
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-v1.4+-orange.svg)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-An end-to-end Machine Learning system that predicts exercise energy expenditure (calories burnt) from biometric telemetry, featuring leak-free data engineering, 5 benchmarked regression models, PCA 2D dimensionality reduction, K-Means workout clustering, and an interactive Streamlit web dashboard.
+An end-to-end Machine Learning system that predicts exercise energy expenditure (calories burnt) from biometric telemetry, featuring leak-free data engineering, 4 benchmarked syllabus regression models (Linear Regression, Decision Tree, Random Forest, KNN), PCA 2D dimensionality reduction, K-Means workout clustering, cardiovascular zone classification, ML-powered exercise recommendations ranked by burn rate, clinical diet planning (BMR/TDEE/macros), and lifestyle risk factor screening.
 
 ---
 
-## 🌐 Live Web Application
+## Live Web Application
 
 The interactive web application is deployed and accessible online:
 
-👉 **[Launch Calorie Burnt Predictor Web App](https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/)**  
-*(Direct link: `https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/`)*
+**[Launch Calorie Burnt Predictor Web App](https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/)**  
+*(Direct URL: `https://gauran404-calorie-burnt-prediction-app-uc72yt.streamlit.app/`)*
 
 ---
 
-## 📌 Project Overview & Evaluation Rubric Alignment
+## Project Overview & Rubric Alignment
 
-| Evaluation Category | Features Implemented in Codebase |
+| Module / Component | Features Implemented in Codebase |
 | :--- | :--- |
 | **1. Data Cleaning & Splitting** | • Automated inner-merge of `exercise.csv` & `calories.csv` on `User_ID` ($N=15,000$ verified zero loss)<br>• Missing values & duplicate checking<br>• Physiological impossibility filtering (body temp, heart rate)<br>• Variance Inflation Factor (VIF) multicollinearity diagnostics<br>• **Strict Split-Before-Scaling** protocol to eliminate data leakage |
-| **2. SOTA Models & Performance Analytics** | • 4 Syllabus Regressors: Linear Regression (Baseline), Decision Tree, Random Forest (Best Model), KNN (tuned $k$)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
-| **3. UI Deployment & Cross-Platform** | • Responsive Streamlit Web App (`app.py`)<br>• Real-time predictions via backend model with direct numeric input boxes<br>• Real-time BMI, metabolic burn rate (kcal/min), and intensity tier<br>• Feature Correlation Heatmap (Seaborn/Matplotlib)<br>• Live 2D PCA cluster projection of user workout session |
-| **4. Code Quality, Repo & Academic Report** | • All model training & testing consolidated in one script (`train_models.py`)<br>• Modular packages: `numpy`, `pandas`, `scikit-learn`, `matplotlib`, `seaborn`, `streamlit`, `joblib`<br>• Publication-grade academic synopsis report (`SYNOPSIS_REPORT.pdf`)<br>• 5 peer-reviewed literature citations (2020–2024)<br>• Comprehensive Viva Voce Q&A Cheat Sheet |
+| **2. Supervised ML Models & CV** | • 4 Syllabus Regressors: Linear Regression (Baseline), Decision Tree, Random Forest (Best Model, $R^2=0.9980$), KNN (tuned $k=11$)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
+| **3. Workout Classification** | • Analysis of theoretical max heart rate ($HR_{\max} = 220 - \text{Age}$)<br>• Cardiovascular training zone classification (Zone 1 Active Recovery to Zone 5 Maximal Effort)<br>• Workout duration volume categorization (Micro-burst, Standard, Prolonged Endurance)<br>• Exertional thermal metabolic state tracking |
+| **4. ML-Ranked Recommendations** | • **Rule-Based Recommender:** Dynamic personalized prescriptions based on BMI, session calories burnt, and weekly expenditure targets<br>• **ML-Powered Ranking Engine:** Evaluates exercise modalities for the user's biometric profile via the trained Random Forest model and ranks by caloric burn rate (kcal/min) |
+| **5. Clinical Diet & Nutrition Engine** | • Basal Metabolic Rate (BMR) calculated via Mifflin-St Jeor clinical equation<br>• Total Daily Energy Expenditure (TDEE) and goal-adjusted caloric targets (Deficit, Maintenance, Surplus)<br>• Gram-level macronutrient breakdown ($2.0\text{ g/kg}$ protein, complex carbs, essential fats)<br>• Structured pre/post-workout meal timing and hydration guidance |
+| **6. Lifestyle Risk Screening** | • Stratification across 4 clinical physiological domains: Cardiovascular Strain, Exertional Heat Strain, Metabolic Profile (BMI), and Overtraining Volume<br>• Automated condition linkage and clinical prevention advice |
+| **7. Production Deployment** | • Responsive Streamlit Cloud Web Application (`app.py`)<br>• Fully documented, verified Jupyter Notebook (`Calories_Burnt_Prediction.ipynb`)<br>• Publication-grade academic synopsis report (`SYNOPSIS_REPORT.pdf`) |
 
 ---
 
-## 📊 Model Performance Leaderboard
+## Model Performance Leaderboard
 
 Benchmarked on **3,000 unseen test instances** (20% holdout split) and verified via **5-Fold Cross-Validation**:
 
 | Model Architecture | Test MAE (kcal) | Test RMSE (kcal) | Test $R^2$ Score | 5-Fold CV $R^2$ ($\mu \pm \sigma$) | Band Accuracy (%) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| 🥇 **Random Forest (Best Model)** | **1.86** | **2.84** | **0.9980** | $\mathbf{0.9974 \pm 0.0002}$ | **97.90%** |
-| 🥈 **KNN Regressor ($k=11$)** | 3.43 | 4.69 | 0.9946 | $0.9933 \pm 0.0004$ | 96.83% |
-| 🥉 **Decision Tree** | 4.53 | 6.49 | 0.9896 | $0.9882 \pm 0.0003$ | 95.87% |
-| **Linear Regression (Baseline)** | 8.44 | 11.49 | 0.9673 | $0.9671 \pm 0.0009$ | 94.20% |
+| **Random Forest (Best Model)** | **1.86** | **2.84** | **0.9980** | **0.9974 +/- 0.0002** | **97.90%** |
+| **KNN Regressor ($k=11$)** | 3.43 | 4.69 | 0.9946 | 0.9933 +/- 0.0004 | 96.83% |
+| **Decision Tree** | 4.53 | 6.49 | 0.9896 | 0.9882 +/- 0.0003 | 95.87% |
+| **Linear Regression (Baseline)** | 8.44 | 11.49 | 0.9673 | 0.9671 +/- 0.0009 | 94.20% |
 
 ---
 
-## 🗂️ Project Directory Structure
+## Project Directory Structure
 
 ```
 calories_burnt_prediction/
@@ -51,14 +54,16 @@ calories_burnt_prediction/
 │   ├── calories.csv             # Raw target calories burnt (15,000 rows)
 │   └── cleaned_calories.csv     # Validated, merged, clean dataset
 ├── models/                      # Serialized trained model binaries & metrics
-│   ├── model.joblib             # Primary production regressor
+│   ├── model.joblib             # Primary production regressor (Random Forest)
 │   ├── scaler.joblib            # StandardScaler fitted on train set
 │   ├── pca_kmeans.joblib        # PCA transformer & KMeans clusterer
 │   ├── correlation_matrix.joblib# Precomputed correlation matrix
 │   ├── pca_sample.csv           # Lightweight sample for 2D plotting
 │   └── metrics_backend.json     # All model metrics & CV scores
-├── app.py                       # Focused Streamlit web application
-├── train_models.py              # All-in-one model training & testing backend script
+├── app.py                       # Comprehensive Streamlit web application
+├── train_models.py              # Consolidated model training & testing backend script
+├── build_notebook.py            # Automated Jupyter notebook generation engine
+├── Calories_Burnt_Prediction.ipynb # 30-cell interactive Jupyter Notebook
 ├── requirements.txt             # Pinned project dependencies (pure UTF-8)
 ├── SYNOPSIS_REPORT.pdf          # Full academic report (compiled PDF)
 ├── convert_to_pdf.py            # PDF generator script
@@ -67,7 +72,7 @@ calories_burnt_prediction/
 
 ---
 
-## 🚀 Quickstart: Running Locally
+## Quickstart: Running Locally
 
 ### 1. Clone the Repository
 ```bash
@@ -80,12 +85,12 @@ cd Calorie-Burnt-Prediction
 pip install -r requirements.txt
 ```
 
-### 3. Run All Model Training & Testing (Backend)
+### 3. Run Backend Model Training & Validation
 ```bash
 python train_models.py
 ```
 
-### 4. Launch the Streamlit Web Dashboard (Frontend)
+### 4. Launch the Streamlit Web Application
 ```bash
 streamlit run app.py
 ```
@@ -93,38 +98,39 @@ Open your browser at `http://localhost:8501`.
 
 ---
 
-## 🧠 Syllabus Key Highlights
+## System Architecture & Features
 
-### 1. Multicollinearity & Variance Inflation Factor (VIF)
-- **Height vs. Weight:** $VIF > 14$ confirms biological co-dependence.
-- **Duration vs. Heart Rate vs. Body Temp:** $VIF \approx 5-8$ confirms physiological coupling during physical exertion.
-- **Model Behavior:** Linear regression coefficient variances are inflated by multicollinearity without reducing overall $R^2$. Tree-based models (Random Forest, Gradient Boosting) are completely robust because feature splits are evaluated independently per node.
+### 1. Workout Telemetry & Cardiovascular Classification
+- Computes theoretical maximum heart rate: $HR_{\max} = 220 - \text{Age}$.
+- Evaluates cardiovascular load into 5 intensity tiers:
+  - **Zone 1 (< 60% HR Max):** Active Recovery & Metabolic Clearing.
+  - **Zone 2 (60-70% HR Max):** Aerobic Base & Maximal Lipid Oxidation.
+  - **Zone 3 (70-80% HR Max):** Aerobic Tempo & Cardiovascular Endurance.
+  - **Zone 4 (80-90% HR Max):** Anaerobic Threshold Conditioning.
+  - **Zone 5 (> 90% HR Max):** Neuromuscular Maximal Sprint Effort.
+- Tracks exertional thermal response (Normal exercise thermogenesis vs. hyperthermic stress).
 
-### 2. The Confusion Matrix Trick (Calorie Band Discretization)
-Because regression target values are continuous, standard classification confusion matrices are undefined. To evaluate classification performance for syllabus requirements, continuous calories are partitioned into operational bands:
-- **Low Burn:** $< 50\text{ kcal}$ (Warmup/cooldown)
-- **Medium Burn:** $50 - 150\text{ kcal}$ (Aerobic cardio)
-- **High Burn:** $> 150\text{ kcal}$ (Peak athletic effort)  
-Our SOTA model achieves **98.60%** band classification accuracy.
+### 2. ML-Powered Exercise Ranking & Personalized Recommender
+- **Dynamic Rule-Based Prescription:** Synthesizes BMI category, current session caloric expenditure, and fitness objectives:
+  - *Example:* "Your BMI is 27.2 (Overweight) and you burn 200 kcal in 30 min of your current session, so try 45 min of brisk running 4 days a week to accelerate daily caloric expenditure (Weekly Target: 1600 kcal)."
+- **ML Exercise Ranking:** Feeds user-specific biometrics (Age, Gender, Height, Weight) combined with standard exercise telemetry profiles through our trained **Random Forest Regressor** to predict energy expenditure and sort activities by **Burn Rate (kcal/min)**.
 
-### 3. Unsupervised Workout Profiling (PCA + K-Means)
-- Features: `Duration`, `Heart_Rate`, `Body_Temp`, `Calories`.
-- Reduced to 2D using **PCA** (explaining **96.3%** cumulative variance).
-- Clustered via **K-Means ($K=3$)** into three clinical personas:
-  1. *Light Warmup / Low Intensity* (Avg 5.3 min, 84.7 bpm $\to$ 20.6 kcal)
-  2. *Moderate Cardio / Aerobic Endurance* (Avg 14.8 min, 94.5 bpm $\to$ 74.8 kcal)
-  3. *High Intensity / Peak Effort* (Avg 24.9 min, 105.6 bpm $\to$ 163.4 kcal)
+### 3. Targeted Diet & Nutrition Engine
+- **BMR:** Calculated using the Mifflin-St Jeor clinical equation:
+  - Men: $10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} + 5$
+  - Women: $10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} - 161$
+- **TDEE:** Baseline metabolic rate scaled by activity factor ($1.35$) plus measured session caloric burn.
+- **Macronutrient Gram Targets:** High-protein allocation ($2.0\text{ g/kg}$ bodyweight), complex carbohydrates for glycogen replenishment, and healthy fats for endocrine support.
 
-### 4. Find-S Concept Learning
-- Algorithm: Tom Mitchell's classical inductive concept learning.
-- Target Concept: `High_Calorie_Burn` ($\ge 150\text{ kcal}$).
-- Learned hypothesis:
-  $$\langle ?, ?, Long\_Duration, ?, ? \rangle$$
-  Proves that burning $\ge 150\text{ kcal}$ strictly necessitates long workout duration ($> 14\text{ min}$) regardless of gender or age.
+### 4. Lifestyle Risk Stratification & Clinical Advice
+- **Cardiovascular Strain:** Flags heart rates $\ge 88\% HR_{\max}$ or $\ge 175\text{ BPM}$; links to acute myocardial fatigue and advises progressive warmup/cooldown.
+- **Exertional Heat Strain:** Flags core temperature $\ge 40.0^\circ\text{C}$; links to heat exhaustion and advises electrolyte rehydration and thermal relief.
+- **Metabolic Profile (BMI):** Stratifies Underweight ($<18.5$), Normal ($18.5-24.9$), Overweight ($25-29.9$), and Obese ($\ge 30$); links to Type 2 Diabetes, hypertension, and joint osteoarthritis, advising non-impact modalities for joint preservation.
+- **Overtraining Volume:** Flags duration $\ge 60\text{ min}$ at heart rates $\ge 150\text{ BPM}$; links to hypercortisolemia and recommends 48-hour recovery spacing.
 
 ---
 
-## 📚 References & Literature Review
+## References & Literature Review
 
 1. **Staudenmayer, J. et al. (2020)**. *Statistical and machine learning approaches for estimating energy expenditure using wearable sensors*. Journal of Applied Physiology.
 2. **Altini, M. & Amft, O. (2021)**. *Estimating Energy Expenditure in Wearable Devices: A Comparative Study of Gradient Boosted Trees and Deep Learning*. IEEE Transactions on Biomedical Engineering.
@@ -134,5 +140,5 @@ Our SOTA model achieves **98.60%** band classification accuracy.
 
 ---
 
-## ⚖️ License
+## License
 This project is open-source and licensed under the MIT License.
