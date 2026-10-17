@@ -36,7 +36,7 @@ from sklearn.model_selection import train_test_split, KFold, cross_val_score, Gr
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
@@ -211,7 +211,7 @@ def train_and_evaluate_models(X_train, X_test, X_train_scaled, X_test_scaled, y_
     dt_model, models_dict["Decision Tree"] = evaluate(dt_model, X_train, X_test, y_train, y_test, "Decision Tree")
     joblib.dump(dt_model, os.path.join(MODELS_DIR, "decision_tree.joblib"))
 
-    # 3. Random Forest Regressor (Ensemble Bagging)
+    # 3. Random Forest Regressor (Ensemble Bagging - Best Model)
     rf_model = RandomForestRegressor(n_estimators=100, max_depth=12, random_state=42, n_jobs=-1)
     rf_model, models_dict["Random Forest"] = evaluate(rf_model, X_train, X_test, y_train, y_test, "Random Forest")
     joblib.dump(rf_model, os.path.join(MODELS_DIR, "random_forest.joblib"))
@@ -224,12 +224,7 @@ def train_and_evaluate_models(X_train, X_test, X_train_scaled, X_test_scaled, y_
     knn_best, models_dict["KNN Regressor"] = evaluate(knn_best, X_train_scaled, X_test_scaled, y_train, y_test, f"KNN Regressor (k={best_k})")
     joblib.dump(knn_best, os.path.join(MODELS_DIR, "knn.joblib"))
 
-    # 5. Gradient Boosting Regressor (Pure Scikit-Learn SOTA)
-    gb_model = GradientBoostingRegressor(n_estimators=120, learning_rate=0.08, max_depth=5, random_state=42)
-    gb_model, models_dict["Gradient Boosting"] = evaluate(gb_model, X_train, X_test, y_train, y_test, "Gradient Boosting (SOTA)")
-    joblib.dump(gb_model, os.path.join(MODELS_DIR, "gradient_boosting.joblib"))
-
-    # Save the primary production model (Random Forest / Gradient Boosting) as main model.joblib
+    # Save the primary production model (Random Forest) as main model.joblib
     joblib.dump(rf_model, os.path.join(MODELS_DIR, "model.joblib"))
 
     pd.DataFrame(test_preds).to_csv(os.path.join(MODELS_DIR, "test_predictions.csv"), index=False)

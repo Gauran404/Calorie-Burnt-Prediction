@@ -4,8 +4,8 @@ CALORIES BURNT PREDICTOR: STREAMLIT FRONTEND WEB APPLICATION
 =============================================================================
 Frontend Features:
 1. User Workout Input & Real-time Calorie Burn Prediction (Model runs on backend)
-2. Feature Correlation Heatmap (Seaborn / Matplotlib)
-3. Workout Profile Clustering (PCA 2D projection with user session marker)
+2. Burn Rate (kcal/min) and Exercise Intensity Classification
+3. Biometric Body Mass Index (BMI) Computation
 
 Packages: numpy, pandas, scikit-learn, matplotlib, seaborn, streamlit, joblib
 =============================================================================
@@ -78,9 +78,6 @@ def load_backend_artifacts():
     artifacts = {
         "model": joblib.load(os.path.join(MODELS_DIR, "model.joblib")),
         "scaler": joblib.load(os.path.join(MODELS_DIR, "scaler.joblib")),
-        "pca_kmeans": joblib.load(os.path.join(MODELS_DIR, "pca_kmeans.joblib")),
-        "corr_mat": joblib.load(os.path.join(MODELS_DIR, "correlation_matrix.joblib")),
-        "pca_sample": pd.read_csv(os.path.join(MODELS_DIR, "pca_sample.csv"))
     }
     return artifacts
 
@@ -88,9 +85,6 @@ def load_backend_artifacts():
 artifacts = load_backend_artifacts()
 model = artifacts["model"]
 scaler = artifacts["scaler"]
-pca_kmeans = artifacts["pca_kmeans"]
-corr_mat = artifacts["corr_mat"]
-pca_sample = artifacts["pca_sample"]
 
 
 # ---------------------------------------------------------------------------
@@ -178,93 +172,6 @@ with col_bmi:
         <div style="margin-top:8px; font-size:0.85rem; font-weight:600; color:#555;">Weight: {weight}kg | Height: {height}cm</div>
     </div>
     """, unsafe_allow_html=True)
-
-st.markdown("---")
-
-# ---------------------------------------------------------------------------
-# VISUALIZATIONS SECTION: HEATMAP & CLUSTER (SIDE BY SIDE)
-# ---------------------------------------------------------------------------
-col_heat, col_clust = st.columns(2)
-
-# --- VISUALIZATION 1: CORRELATION HEATMAP ---
-with col_heat:
-    st.subheader("Feature Correlation Heatmap")
-    st.caption("Correlation between physiological parameters and calories burnt:")
-
-    fig_heat, ax_heat = plt.subplots(figsize=(6, 5))
-    sns.heatmap(
-        corr_mat,
-        annot=True,
-        fmt=".2f",
-        cmap="coolwarm",
-        square=True,
-        cbar_kws={"shrink": 0.8},
-        ax=ax_heat,
-        linewidths=0.5
-    )
-    plt.xticks(rotation=45, ha="right", fontsize=9)
-    plt.yticks(rotation=0, fontsize=9)
-    plt.tight_layout()
-    st.pyplot(fig_heat)
-
-# --- VISUALIZATION 2: PCA 2D WORKOUT CLUSTER MAP ---
-with col_clust:
-    st.subheader("Workout Clusters (PCA 2D)")
-    st.caption("Workout profile segmentation with your current session projected live:")
-
-    # Project current user workout onto 2D PCA
-    c_scaler = pca_kmeans["scaler"]
-    c_pca = pca_kmeans["pca"]
-    c_kmeans = pca_kmeans["kmeans"]
-    c_personas = pca_kmeans["cluster_personas"]
-    c_features = pca_kmeans["cluster_features"]
-
-    user_vec_df = pd.DataFrame([{
-        "Duration": float(duration),
-        "Heart_Rate": float(heart_rate),
-        "Body_Temp": float(body_temp),
-        "Calories": float(predicted_calories)
-    }])[c_features]
-    user_vec_scaled = c_scaler.transform(user_vec_df)
-    user_pc = c_pca.transform(user_vec_scaled)[0]
-
-    # Plot Cluster Scatter
-    fig_pca, ax_pca = plt.subplots(figsize=(6, 5))
-    cluster_colors = {0: "#3498db", 1: "#f39c12", 2: "#e74c3c"}
-
-    for cid in [0, 1, 2]:
-        subset = pca_sample[pca_sample["Cluster"] == cid]
-        ax_pca.scatter(
-            subset["PC1"],
-            subset["PC2"],
-            c=cluster_colors[cid],
-            label=c_personas[cid],
-            alpha=0.5,
-            s=35,
-            edgecolor="none"
-        )
-
-    # Plot User's current location as a distinct gold star with black outline
-    ax_pca.scatter(
-        user_pc[0],
-        user_pc[1],
-        c="#FFD700",
-        marker="*",
-        s=320,
-        edgecolor="black",
-        linewidth=1.8,
-        label="Your Workout Session",
-        zorder=5
-    )
-
-    var_p1 = pca_kmeans["var_exp"][0] * 100
-    var_p2 = pca_kmeans["var_exp"][1] * 100
-    ax_pca.set_xlabel(f"Principal Component 1 ({var_p1:.1f}% var)", fontsize=9)
-    ax_pca.set_ylabel(f"Principal Component 2 ({var_p2:.1f}% var)", fontsize=9)
-    ax_pca.legend(fontsize=8, loc="upper left")
-    ax_pca.grid(True, linestyle="--", alpha=0.4)
-    plt.tight_layout()
-    st.pyplot(fig_pca)
 
 # Footer
 st.markdown("---")
