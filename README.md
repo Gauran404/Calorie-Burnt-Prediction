@@ -23,7 +23,7 @@ The interactive web application is deployed and accessible online:
 | Evaluation Category | Features Implemented in Codebase |
 | :--- | :--- |
 | **1. Data Cleaning & Splitting** | • Automated inner-merge of `exercise.csv` & `calories.csv` on `User_ID` ($N=15,000$ verified zero loss)<br>• Missing values & duplicate checking<br>• Physiological impossibility filtering (body temp, heart rate)<br>• Variance Inflation Factor (VIF) multicollinearity diagnostics<br>• **Strict Split-Before-Scaling** protocol to eliminate data leakage |
-| **2. SOTA Models & Performance Analytics** | • 5 Regressors: Linear Regression (Baseline), Decision Tree, Random Forest, KNN (tuned $k$), Gradient Boosting (SOTA)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
+| **2. SOTA Models & Performance Analytics** | • 4 Syllabus Regressors: Linear Regression (Baseline), Decision Tree, Random Forest (Best Model), KNN (tuned $k$)<br>• 5-Fold Cross-Validation ($\mu \pm \sigma$)<br>• MAE, RMSE, and $R^2$ comparative metrics<br>• **Syllabus Innovations:** PCA + K-Means Workout Profiling, Find-S Concept Learning, and Calorie Band Confusion Matrix Trick |
 | **3. UI Deployment & Cross-Platform** | • Responsive Streamlit Web App (`app.py`)<br>• Real-time predictions via backend model with direct numeric input boxes<br>• Real-time BMI, metabolic burn rate (kcal/min), and intensity tier<br>• Feature Correlation Heatmap (Seaborn/Matplotlib)<br>• Live 2D PCA cluster projection of user workout session |
 | **4. Code Quality, Repo & Academic Report** | • All model training & testing consolidated in one script (`train_models.py`)<br>• Modular packages: `numpy`, `pandas`, `scikit-learn`, `matplotlib`, `seaborn`, `streamlit`, `joblib`<br>• Publication-grade academic synopsis report (`SYNOPSIS_REPORT.pdf`)<br>• 5 peer-reviewed literature citations (2020–2024)<br>• Comprehensive Viva Voce Q&A Cheat Sheet |
 
@@ -35,10 +35,9 @@ Benchmarked on **3,000 unseen test instances** (20% holdout split) and verified 
 
 | Model Architecture | Test MAE (kcal) | Test RMSE (kcal) | Test $R^2$ Score | 5-Fold CV $R^2$ ($\mu \pm \sigma$) | Band Accuracy (%) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| 🥇 **Gradient Boosting (SOTA)** | **1.43** | **2.03** | **0.9990** | $\mathbf{0.9987 \pm 0.0001}$ | **98.60%** |
-| 🥈 **Random Forest** | 1.86 | 2.84 | 0.9980 | $0.9974 \pm 0.0002$ | 97.90% |
-| 🥉 **KNN Regressor ($k=11$)** | 3.43 | 4.69 | 0.9946 | $0.9933 \pm 0.0004$ | 96.83% |
-| **Decision Tree** | 4.53 | 6.49 | 0.9896 | $0.9882 \pm 0.0003$ | 95.87% |
+| 🥇 **Random Forest (Best Model)** | **1.86** | **2.84** | **0.9980** | $\mathbf{0.9974 \pm 0.0002}$ | **97.90%** |
+| 🥈 **KNN Regressor ($k=11$)** | 3.43 | 4.69 | 0.9946 | $0.9933 \pm 0.0004$ | 96.83% |
+| 🥉 **Decision Tree** | 4.53 | 6.49 | 0.9896 | $0.9882 \pm 0.0003$ | 95.87% |
 | **Linear Regression (Baseline)** | 8.44 | 11.49 | 0.9673 | $0.9671 \pm 0.0009$ | 94.20% |
 
 ---
