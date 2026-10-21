@@ -368,40 +368,9 @@ Evaluated on **3,000 unseen test instances** (20% holdout) and verified via **5-
 
 <!-- PAGE BREAK -->
 
-# 9. TECHNICAL VIVA VOCE EXAMINATION CHEAT SHEET
+# 9. CONCLUSION, RUBRIC COMPLIANCE & REFERENCES
 
-### Q1: Why does Linear Regression achieve an $R^2 \approx 0.967$ on this dataset?
-* **Answer:** Caloric expenditure is governed primarily by work-energy thermodynamics: Work = Power $\times$ Time ($W = P \cdot \Delta t$). Physical energy burn is inherently proportional to exercise duration and heart rate. Because the macroscopic physics are predominantly linear, Ordinary Least Squares captures $96.7\%$ of target variance without polynomial terms.
-
-### Q2: Why does Random Forest outperform Linear Regression ($R^2 = 0.9980$ vs. $0.9673$)?
-* **Answer:** While primary energy burn is linear, biological exercise includes subtle non-linear interactions:
-  1. *Thermal Drift & Heart Rate Drift:* Prolonged exercise raises core body temperature, non-linearly increasing cardiac workload.
-  2. *Biometric Multipliers:* Body weight acts as a non-linear multiplier on movement cost (a 95 kg person burns more calories per minute than a 55 kg person at identical heart rates). Tree ensembles capture these higher-order interactions through hierarchical splits without manual feature engineering.
-
-### Q3: Why is $R^2$ noticeably higher on this Kaggle benchmark than in real-world smartwatch studies?
-* **Answer:** Real-world wearable telemetry contains substantial sensor noise (photoplethysmography optical motion artifacts, perspiration impedance, and unobserved individual metabolic traits like VO2 max). The Kaggle benchmark was synthetically generated using physiological equations with low stochastic noise ($\sigma \approx 1-3\%$). Real-world wearable studies typically achieve $R^2 \approx 0.80 - 0.88$.
-
-### Q4: What is Multicollinearity, and how does it affect Linear Regression vs. Random Forest?
-* **Answer:** Multicollinearity occurs when predictors are strongly correlated (e.g., `Height` and `Weight` with $\text{VIF} > 14$, and `Duration`, `Heart_Rate`, and `Body_Temp` with $\text{VIF} \approx 5-8$):
-  * *Linear Regression:* Multicollinearity does not harm overall $R^2$, but it makes $(\mathbf{X}^T\mathbf{X})$ near-singular, inflating coefficient standard errors and obscuring individual feature interpretation.
-  * *Random Forest:* Tree split algorithms evaluate features independently at each node. Collinear features can substitute for each other across different trees, leaving split purity and predictive accuracy completely unharmed.
-
-### Q5: Why is feature scaling mandatory for KNN and PCA, but unnecessary for Decision Trees and Random Forest?
-* **Answer:**
-  * *KNN and PCA* rely on geometric Euclidean distance metrics: $d(\mathbf{x}, \mathbf{z}) = \sqrt{\sum (x_j - z_j)^2}$. Unscaled features with large numerical ranges (Height: 120–220 cm) dominate small-range features (Body Temp: 36–42°C). Scaling standardizes dimensional contributions.
-  * *Decision Trees and Random Forests* split data along individual orthogonal axes ($x_j \le \theta$). Monotonic scale transformations do not alter sample ordering or optimal split thresholds, making tree algorithms invariant to monotonic feature scaling.
-
-### Q6: Why must the train-test split precede feature scaling?
-* **Answer:** Scaling the complete dataset prior to splitting calculates the global mean $\mu_{\text{all}}$ and standard deviation $\sigma_{\text{all}}$ across all samples. This leaks distributional information from unseen test instances into training representations (**Data Leakage**). To ensure valid generalization, the scaler must be fit exclusively on $X_{\text{train}}$ and then applied to transform $X_{\text{test}}$.
-
-### Q7: How does the new ML Exercise Ranking work in the application?
-* **Answer:** The application passes the user's specific demographic profile (`Age`, `Gender`, `Height`, `Weight`, `Duration`) combined with standard cardiovascular intensities across 8 exercises into our trained Random Forest model (`model.joblib`). The model predicts calories burnt for each modality, computes the **Burn Rate (kcal/min)**, and dynamically ranks them from highest to lowest.
-
-<!-- PAGE BREAK -->
-
-# 10. CONCLUSION, RUBRIC COMPLIANCE & REFERENCES
-
-### 10.1 Project Conclusion & Rubric Compliance Summary
+### 9.1 Project Conclusion & Rubric Compliance Summary
 This mini-project successfully designed, evaluated, and deployed an end-to-end Machine Learning system for exercise energy expenditure prediction, satisfying all academic criteria:
 
 | Evaluation Criteria | Target Marks | Project Implementation Summary | Verification Status |
@@ -412,12 +381,12 @@ This mini-project successfully designed, evaluated, and deployed an end-to-end M
 | **Code Quality & Repo** | **4 Marks** | Clean GitHub repository, single consolidated pipeline script (`train_models.py`), automated notebook generator (`build_notebook.py`), 30-cell `.ipynb`, and academic synopsis report. | **Compliant (4/4)** |
 | **Total Marks Potential** | **15 Marks** | **Comprehensive end-to-end machine learning system fully satisfying curriculum requirements.** | **15 / 15** |
 
-### 10.2 Future Scope & Research Roadmap
+### 9.2 Future Scope & Research Roadmap
 * **Time-Series Sensor Integration:** Transitioning from aggregate workout summaries to continuous 1D Convolutional Neural Networks (CNN) or LSTMs processing raw PPG and tri-axial accelerometer time-series feeds to model acute heart rate recovery kinetics.
 * **On-Device Edge Deployment:** Quantizing the Random Forest ensemble into ONNX or TensorFlow Lite formats for local, low-latency execution on embedded microcontrollers and wearable smartwatches without cloud dependency.
 * **Personalized Metabolic Baselines:** Incorporating user-specific resting metabolic rates (RMR) and heart rate variability (HRV) for personalized baseline calibration.
 
-### 10.3 Peer-Reviewed Academic References
+### 9.3 Peer-Reviewed Academic References
 1. **Staudenmayer, J., Zhu, W., & Catellier, D. J. (2020)**. *Statistical and machine learning approaches for estimating energy expenditure using wearable sensors*. **Journal of Applied Physiology**, 128(3), 643–654. https://doi.org/10.1152/japplphysiol.00755.2019
 2. **Altini, M., & Amft, O. (2021)**. *Estimating Energy Expenditure in Wearable Devices: A Comparative Study of Gradient Boosted Trees and Deep Learning*. **IEEE Transactions on Biomedical Engineering**, 68(5), 1541–1550. https://doi.org/10.1109/TBME.2020.3022929
 3. **Zhang, K., Wang, Y., & Liu, X. (2022)**. *Multimodal Sensor Fusion for Caloric Expenditure Estimation During High-Intensity Physical Activity*. **Sensors (MDPI)**, 22(8), 2914. https://doi.org/10.3390/s22082914
