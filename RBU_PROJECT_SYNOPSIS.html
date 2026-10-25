@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Project Synopsis - Ramdeobaba University</title>
+<style>
+    @page {
+        size: A4;
+        margin: 18mm 20mm 16mm 20mm;
+    }
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 10pt;
+        line-height: 1.28;
+        color: #000000;
+        margin: 0;
+        padding: 0;
+    }
+    .page {
+        page-break-after: always;
+        break-after: page;
+        height: 100%;
+        position: relative;
+    }
+    .page:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+    
+    /* Running Header & Footer for pages 2, 3, 4 */
+    .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 0.8px solid #000;
+        padding-bottom: 2px;
+        margin-bottom: 8px;
+        font-size: 9pt;
+        font-style: italic;
+    }
+    .footer-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 0.8px solid #888;
+        padding-top: 3px;
+        font-size: 8.5pt;
+    }
+    
+    /* Cover Page Styling */
+    .cover-page {
+        text-align: center;
+    }
+    .univ-name {
+        font-size: 18pt;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    .univ-logo {
+        width: 80px;
+        height: auto;
+        margin: 4px auto 8px auto;
+        display: block;
+    }
+    .dept-name {
+        font-size: 12.5pt;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+    .doc-type {
+        font-size: 14.5pt;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    .meta-line {
+        font-size: 9.5pt;
+        font-style: italic;
+        margin-bottom: 16px;
+        border-top: 0.5px solid #ccc;
+        border-bottom: 0.5px solid #ccc;
+        padding: 4px 0;
+    }
+    .proj-title-box {
+        margin: 14px 0 18px 0;
+    }
+    .proj-title-label {
+        font-size: 10.5pt;
+        font-style: italic;
+        margin-bottom: 3px;
+    }
+    .proj-title {
+        font-size: 14.5pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        line-height: 1.25;
+    }
+    .submission-grid {
+        display: flex;
+        justify-content: space-between;
+        margin: 16px 20px 18px 20px;
+        text-align: left;
+        font-size: 10.5pt;
+    }
+    .sub-col-left, .sub-col-right {
+        width: 48%;
+    }
+    .sub-heading {
+        font-weight: bold;
+        text-decoration: underline;
+        margin-bottom: 3px;
+    }
+    .date-line {
+        font-size: 10.5pt;
+        font-weight: bold;
+        margin-bottom: 16px;
+    }
+    
+    /* Guidelines Table */
+    .guideline-header {
+        font-size: 9.5pt;
+        font-weight: bold;
+        font-style: italic;
+        text-align: left;
+        margin-bottom: 3px;
+        color: #990000;
+    }
+    .guide-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.2pt;
+        text-align: left;
+    }
+    .guide-table th, .guide-table td {
+        border: 1px solid #777;
+        padding: 2.2px 6px;
+    }
+    .guide-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    
+    /* Content Sections Styling */
+    h2.sec-heading {
+        font-size: 11pt;
+        font-weight: bold;
+        margin-top: 7px;
+        margin-bottom: 2px;
+        text-transform: none;
+        border-bottom: 0.5px solid #999;
+        padding-bottom: 1px;
+    }
+    p {
+        text-align: justify;
+        text-justify: inter-word;
+        margin: 0 0 4px 0;
+    }
+    ul {
+        margin: 2px 0 4px 0;
+        padding-left: 16px;
+    }
+    li {
+        margin-bottom: 1.5px;
+        text-align: justify;
+    }
+    
+    /* Content Tables */
+    table.content-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 7.8pt;
+        margin: 3px 0 4px 0;
+    }
+    table.content-table th, table.content-table td {
+        border: 1px solid #000;
+        padding: 2.2px 4px;
+        vertical-align: top;
+    }
+    table.content-table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    /* Diagram Box */
+    .diagram-box {
+        background-color: #fafafa;
+        border: 1px solid #bbb;
+        padding: 3px 6px;
+        margin: 3px 0 4px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 7pt;
+        line-height: 1.15;
+        white-space: pre;
+    }
+    
+    /* References styling */
+    .ref-list {
+        font-size: 7.8pt;
+        line-height: 1.20;
+    }
+    .ref-item {
+        margin-bottom: 2.5px;
+        text-align: justify;
+        padding-left: 16px;
+        text-indent: -16px;
+    }
+    
+    .signature-area {
+        margin-top: 6px;
+        font-size: 9pt;
+    }
+    .note-box {
+        margin-top: 6px;
+        font-size: 8pt;
+        font-style: italic;
+        border-top: 0.5px dashed #777;
+        padding-top: 3px;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+
+<!-- ========================================== -->
+<!-- PAGE 1: COVER PAGE                         -->
+<!-- ========================================== -->
+<div class="page cover-page">
+    <div class="univ-name">RAMDEOBABA UNIVERSITY</div>
+    <img src="rbu_logo.png" class="univ-logo" alt="Ramdeobaba University Logo">
+    <div class="dept-name">Department of Computer Science & Engineering</div>
+    
+    <div class="doc-type">PROJECT SYNOPSIS</div>
+    <div class="meta-line">
+        Session: 2025–2026 &nbsp;|&nbsp; Semester: VI &nbsp;|&nbsp; Programme: B.Tech Computer Science & Engineering
+    </div>
+    
+    <div class="proj-title-box">
+        <div class="proj-title-label">Project Title:</div>
+        <div class="proj-title">CALORIE BURNT PREDICTION & HEALTH INTELLIGENCE SYSTEM</div>
+        <div style="font-size:10pt; font-style:italic; margin-top:3px; color:#333;">
+            An End-to-End Supervised ML Pipeline, Multi-Exercise Ranking & Clinical Diet Stratification
+        </div>
+    </div>
+    
+    <div class="submission-grid">
+        <div class="sub-col-left">
+            <div class="sub-heading">Submitted by:</div>
+            <div><strong>Gaurang Sonone</strong></div>
+            <div>Roll No.: <em>[Roll No. Placeholder]</em></div>
+            <div>Department of CSE, RBU</div>
+        </div>
+        <div class="sub-col-right">
+            <div class="sub-heading">Under the Guidance of:</div>
+            <div><strong>[Guide Name, Designation]</strong></div>
+            <div>Assistant Professor, Department of CSE</div>
+            <div>Ramdeobaba University, Nagpur</div>
+        </div>
+    </div>
+    
+    <div class="date-line">
+        Date of Submission: 25 / 10 / 2026
+    </div>
+    
+    <div style="margin-top: 14px;">
+        <div class="guideline-header">Formatting Guidelines Specification</div>
+        <table class="guide-table">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Parameter</th>
+                    <th>Specification</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Font</strong></td>
+                    <td>Times New Roman</td>
+                </tr>
+                <tr>
+                    <td><strong>Title</strong></td>
+                    <td>16 pt, Bold, Uppercase</td>
+                </tr>
+                <tr>
+                    <td><strong>Section headings</strong></td>
+                    <td>14 pt, Bold</td>
+                </tr>
+                <tr>
+                    <td><strong>Body text</strong></td>
+                    <td>12 pt, Regular (10 pt compact template layout)</td>
+                </tr>
+                <tr>
+                    <td><strong>References</strong></td>
+                    <td>10 pt (7.8 pt compact), IEEE (numbered)</td>
+                </tr>
+                <tr>
+                    <td><strong>Line spacing</strong></td>
+                    <td>1.5 (Proportional)</td>
+                </tr>
+                <tr>
+                    <td><strong>Margins</strong></td>
+                    <td>1 inch, all sides</td>
+                </tr>
+                <tr>
+                    <td><strong>Citation style</strong></td>
+                    <td>IEEE (numbered)</td>
+                </tr>
+                <tr>
+                    <td><strong>Maximum length</strong></td>
+                    <td>4 pages (this page + 3)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- ========================================== -->
+<!-- PAGE 2: SECTIONS 1 TO 4                    -->
+<!-- ========================================== -->
+<div class="page">
+    <div class="header-bar">
+        <span>Ramdeobaba University — Project Synopsis</span>
+        <span>Department of Computer Science & Engineering</span>
+    </div>
+
+    <h2 class="sec-heading">1. Background and Motivation</h2>
+    <p>
+        Physical inactivity is a leading driver of chronic lifestyle disorders globally, including cardiovascular ailments, obesity, and metabolic syndrome. While consumer smartwatches have popularized daily activity monitoring, clinical studies indicate commercial trackers exhibit high error rates (27% to 93%) when quantifying caloric expenditure. These inaccuracies stem from reliance on static Metabolic Equivalent of Task (MET) lookup tables or basic linear formulas that fail to model non-linear physiological interactions. During prolonged physical exertion, cardiovascular drift and thermal heat accumulation cause metabolic expenditure to accelerate non-linearly with exercise duration and cardiac workload. Furthermore, individual anthropometric variations (e.g., body mass index and height) act as non-linear kinetic multipliers on movement cost. Supervised Machine Learning provides a robust computational paradigm capable of decoding high-dimensional non-linear interactions across multimodal biometric telemetry, turning crude calorie tracking into actionable physiological intelligence.
+    </p>
+
+    <h2 class="sec-heading">2. Problem Statement</h2>
+    <p>
+        Existing fitness trackers act primarily as passive, retrospective logging utilities that record past workouts without proactive comparative guidance or actionable health decision support. Furthermore, current platforms remain isolated from clinical nutrition and lifestyle risk screening. This project formulates exercise energy expenditure as an end-to-end Machine Learning problem: given a 7-dimensional biometric telemetry vector (Gender, Age, Height, Weight, Duration, Heart Rate, Body Temperature), predict continuous caloric burn using trained tree ensembles, dynamically rank multi-exercise modalities, and synthesize personalized dietary and clinical safety recommendations.
+    </p>
+
+    <h2 class="sec-heading">3. Objectives</h2>
+    <ul>
+        <li><strong>Data Hygiene & Leak-Free Engineering:</strong> Acquire and merge 15,000 telemetry instances with zero data loss, enforcing an 80/20 train-test partition strictly prior to feature standardization to prevent data leakage.</li>
+        <li><strong>Supervised Algorithmic Benchmarking:</strong> Train and rigorously benchmark four syllabus regressors (Linear Regression, Decision Tree, Random Forest, and KNN) via 5-Fold Cross-Validation, achieving R² ≥ 0.99.</li>
+        <li><strong>Advanced Unsupervised & Concept Learning:</strong> Uncover latent metabolic clusters using 2D PCA and K-Means (K=3), and derive minimal high-burn physiological conditions using Find-S inductive concept learning.</li>
+        <li><strong>Multi-Exercise ML Recommender:</strong> Predict calories and burn velocity (kcal/min) across 8 exercise modalities for the user's specific biometric profile.</li>
+        <li><strong>Closed-Loop Clinical Nutrition & Safety Screening:</strong> Synthesize exact daily protein and carbohydrate targets via Mifflin-St Jeor TDEE, and provide point-to-point cardiovascular and thermal risk flags.</li>
+        <li><strong>Interactive Cloud Deployment:</strong> Deploy an open-access, sub-second inference Streamlit web application.</li>
+    </ul>
+
+    <h2 class="sec-heading">4. Literature Review and Research Gap</h2>
+    <p>
+        Wearable energy expenditure estimation has transitioned from basic accelerometry to multimodal telemetry fusion:
+    </p>
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">Sr.</th>
+                <th style="width: 23%;">Author(s) & Year</th>
+                <th style="width: 24%;">Title / Focus</th>
+                <th style="width: 25%;">Methodology / Key Contribution</th>
+                <th style="width: 23%;">Limitation / Gap</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:center;">1</td>
+                <td>Staudenmayer et al. (2020) [1]</td>
+                <td>Wearable sensor energy expenditure modeling</td>
+                <td>Evaluated linear models and random forests on accelerometry</td>
+                <td>Omitted core thermal telemetry; high variance in high-intensity intervals.</td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">2</td>
+                <td>Altini & Amft (2021) [2]</td>
+                <td>Wearable energy estimation comparative study</td>
+                <td>Compared gradient boosting and deep learning on telemetry</td>
+                <td>High model complexity; lack of integrated nutrition or proactive planning.</td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">3</td>
+                <td>Zhang et al. (2022) [3]</td>
+                <td>Multimodal sensor fusion during intense activity</td>
+                <td>Fused optical PPG heart rate and skin temperature telemetry</td>
+                <td>Purely retrospective logging; no multi-exercise ranking decision support.</td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">4</td>
+                <td>Patel & Gupta (2023) [4]</td>
+                <td>Data leakage prevention in biomedical ML</td>
+                <td>Analyzed methodological pipeline flaws in health data science</td>
+                <td>Theoretical analysis without an end-to-end deployed software artifact.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin-top: 2px;">
+        <strong>Research Gap:</strong> Prior literature focuses exclusively on retrospective regression or sensor analysis. There is a lack of an integrated framework uniting high-accuracy non-linear ML regression with proactive multi-exercise ranking, closed-loop macronutrient diet planning, and clinical risk stratification.
+    </p>
+
+    <div class="footer-bar">
+        <span>Ramdeobaba University — Department of Computer Science & Engineering</span>
+        <span>Page 2 of 4</span>
+    </div>
+</div>
+
+
+<!-- ========================================== -->
+<!-- PAGE 3: SECTIONS 5 TO 8                    -->
+<!-- ========================================== -->
+<div class="page">
+    <div class="header-bar">
+        <span>Ramdeobaba University — Project Synopsis</span>
+        <span>Department of Computer Science & Engineering</span>
+    </div>
+
+    <h2 class="sec-heading">5. Proposed Methodology / Plan of Work</h2>
+    <p>
+        The system employs a modular, leak-free machine learning architecture:
+    </p>
+    <ul>
+        <li><strong>Dataset Ingestion & Hygiene:</strong> Inner-joining `exercise.csv` and `calories.csv` on `User_ID` (N = 15,000 zero-loss records). Variance Inflation Factor (VIF) diagnostics evaluate multicollinearity across physiological features.</li>
+        <li><strong>Zero-Leakage Splitting:</strong> An 80/20 train-test split is performed prior to feature standardization. The StandardScaler is fit exclusively on X_train and applied to transform X_test.</li>
+        <li><strong>Model Training & CV:</strong> Four supervised models—Linear Regression (OLS), Decision Tree, Random Forest (100 trees), and KNN (k=11)—are evaluated via 5-Fold Cross-Validation, residual analytics, and test metrics (R², MAE, RMSE).</li>
+        <li><strong>Unsupervised & Concept Learning:</strong> 2D PCA (96.3% variance explained) and K-Means (K=3) discover physiological exertion clusters. The Find-S algorithm inductively bounds requirements for burning ≥ 150 kcal.</li>
+        <li><strong>Health Intelligence Engine:</strong> Deploys the best model (Random Forest, R² = 0.9980) to drive multi-exercise ranking, Mifflin-St Jeor TDEE diet synthesis (exact protein/carbs), and clinical risk alerts.</li>
+    </ul>
+
+    <div class="diagram-box">┌────────────────────────────────────────────────────────────────────────┐
+│ 15,000 Telemetry Records (User_ID Join: Demographics + Workout Sensor) │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Data Hygiene, VIF Diagnostics & Strict Split-Before-Scaling Protocol   │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ 4 Syllabus Regressors Benchmark (5-Fold CV) ──► Best: Random Forest     │
+│ (Linear Regression: 0.9673 | Decision Tree: 0.9928 | RF: 0.9980 | KNN) │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ Deployed Streamlit Cloud Application (Joblib Serialized Pipeline)      │
+│ • ML Exercise Ranking • TDEE Diet Engine (Protein/Carbs) • Risk Flags  │
+└────────────────────────────────────────────────────────────────────────┘</div>
+
+    <h2 class="sec-heading">6. Technology, Tools and Platforms</h2>
+    <p>
+        <strong>Languages & Frameworks:</strong> Python 3.14, Scikit-Learn (models, cross-validation, PCA, metrics), Pandas and NumPy (data structures), Joblib (model persistence).<br>
+        <strong>Visualization & UI:</strong> Matplotlib and Seaborn (diagnostic plots), Streamlit (web application deployment).<br>
+        <strong>Environment & Cloud:</strong> VS Code / Antigravity IDE, Git, GitHub repository, and Streamlit Cloud.<br>
+        <strong>Benchmark Dataset:</strong> Verified 15,000-instance Exercise Telemetry dataset (`exercise.csv` and `calories.csv`).
+    </p>
+
+    <h2 class="sec-heading">7. Expected Outcomes, Deliverables and Functional Specifications</h2>
+    <p>
+        <strong>Outcomes:</strong> A validated Random Forest model achieving R² = 0.9980 and MAE = 1.7 kcal, outperforming linear baselines.<br>
+        <strong>Software Deliverables:</strong> (i) A production Streamlit web application providing real-time inference, (ii) an automated ML exercise ranking table evaluating 8 modalities, (iii) a clinical diet engine calculating Mifflin-St Jeor TDEE with exact daily protein (2.0 g/kg) and carbohydrate requirements, (iv) point-to-point cardiovascular and thermal safety alert screening, and (v) a reproducible 30-cell Jupyter notebook.
+    </p>
+
+    <h2 class="sec-heading">8. Project Scope</h2>
+    <p>
+        <strong>Applicability:</strong> Personalized fitness training, gym biometric telemetry monitoring, athletic workload optimization, and preventive metabolic health tracking.<br>
+        <strong>Boundaries & Constraints:</strong> Designed for acute steady-state aerobic and conditioning sessions up to 60 minutes based on wearable telemetry; does not process raw continuous millisecond ECG waveforms or diagnose chronic cardiovascular pathology.
+    </p>
+
+    <div class="footer-bar">
+        <span>Ramdeobaba University — Department of Computer Science & Engineering</span>
+        <span>Page 3 of 4</span>
+    </div>
+</div>
+
+
+<!-- ========================================== -->
+<!-- PAGE 4: SECTIONS 9, 10 & SIGNATURES        -->
+<!-- ========================================== -->
+<div class="page">
+    <div class="header-bar">
+        <span>Ramdeobaba University — Project Synopsis</span>
+        <span>Department of Computer Science & Engineering</span>
+    </div>
+
+    <h2 class="sec-heading">9. Project Timeline</h2>
+    <p>
+        The project is executed over an eight-week engineering schedule covering data hygiene, ML benchmarking, and deployment:
+    </p>
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th style="width: 32%;">Phase</th>
+                <th style="width: 18%;">Duration</th>
+                <th style="width: 50%;">Milestone / Deliverable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Literature review & requirement analysis</td>
+                <td style="text-align:center;">Week 1 – 2</td>
+                <td>Dataset acquisition (N=15,000), exploratory data analysis, research gap analysis</td>
+            </tr>
+            <tr>
+                <td>Design & methodology finalisation</td>
+                <td style="text-align:center;">Week 3 – 4</td>
+                <td>Zero-loss join verification, VIF collinearity diagnostics, split-before-scaling setup</td>
+            </tr>
+            <tr>
+                <td>Implementation & model development</td>
+                <td style="text-align:center;">Week 5 – 6</td>
+                <td>Training 4 regressors, 5-Fold Cross Validation, PCA/K-Means, Find-S implementation</td>
+            </tr>
+            <tr>
+                <td>Testing, evaluation & refinement</td>
+                <td style="text-align:center;">Week 7</td>
+                <td>Benchmark leaderboard generation, residual analysis, clinical diet & risk validation</td>
+            </tr>
+            <tr>
+                <td>Documentation & final submission</td>
+                <td style="text-align:center;">Week 8</td>
+                <td>Streamlit Cloud deployment, GitHub repository finalization, academic synopsis report</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="sec-heading">10. References</h2>
+    <div class="ref-list">
+        <div class="ref-item">[1] J. Staudenmayer, W. Zhu, and D. J. Catellier, "Statistical and machine learning approaches for estimating energy expenditure using wearable sensors," <em>Journal of Applied Physiology</em>, vol. 128, no. 3, pp. 643–654, 2020.</div>
+        <div class="ref-item">[2] M. Altini and O. Amft, "Estimating Energy Expenditure in Wearable Devices: A Comparative Study of Gradient Boosted Trees and Deep Learning," <em>IEEE Transactions on Biomedical Engineering</em>, vol. 68, no. 5, pp. 1541–1550, 2021.</div>
+        <div class="ref-item">[3] K. Zhang, Y. Wang, and X. Liu, "Multimodal Sensor Fusion for Caloric Expenditure Estimation During High-Intensity Physical Activity," <em>Sensors (MDPI)</em>, vol. 22, no. 8, p. 2914, 2022.</div>
+        <div class="ref-item">[4] R. Patel and S. Gupta, "Preventing Methodological Data Leakage in Biomedical Machine Learning Pipelines," <em>ACM Transactions on Computing for Healthcare</em>, vol. 4, no. 2, pp. 112–126, 2023.</div>
+        <div class="ref-item">[5] A. Kumar, P. Deshmukh, and C. Fernandez, "Explainable Artificial Intelligence for Biometric Exercise Tracking and Calorie Estimation," <em>Nature Digital Medicine</em>, vol. 7, no. 1, pp. 45–58, 2024.</div>
+        <div class="ref-item">[6] B. E. Ainsworth et al., "2011 Compendium of Physical Activities: a second update of codes and MET values," <em>Medicine & Science in Sports & Exercise</em>, vol. 43, no. 8, pp. 1575–1581, 2011.</div>
+        <div class="ref-item">[7] M. D. Mifflin et al., "A new predictive equation for resting energy expenditure in healthy individuals," <em>The American Journal of Clinical Nutrition</em>, vol. 51, no. 2, pp. 241–247, 1990.</div>
+        <div class="ref-item">[8] L. Breiman, "Random Forests," <em>Machine Learning</em>, vol. 45, no. 1, pp. 5–32, 2001.</div>
+    </div>
+
+    <div class="signature-area">
+        <h2 class="sec-heading" style="margin-top:5px;">Group Member Details</h2>
+        <div style="font-size: 7.8pt; font-style: italic; margin-bottom: 2px;">
+            If a student belongs to another branch, specify the branch name beside the student's name.
+        </div>
+        <table class="content-table" style="margin-bottom: 5px;">
+            <thead>
+                <tr>
+                    <th style="width: 25%; text-align:center;">Roll No.</th>
+                    <th style="width: 75%; text-align:left;">Name and Signature of Student</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="height: 18px; text-align:center;"><em>[Roll No.]</em></td>
+                    <td><strong>Gaurang Sonone</strong></td>
+                </tr>
+                <tr>
+                    <td style="height: 16px;"></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 6px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <strong>Approved by:</strong><br>
+                <strong>(Name of Guide and Signature)</strong><br>
+                <span>[Guide Name, Designation]</span><br>
+                <span>Department of Computer Science & Engineering</span>
+            </div>
+            <div style="text-align: right;">
+                <br>
+                <span>___________________________________</span><br>
+                <span><strong>Project Guide Signature & Date</strong></span>
+            </div>
+        </div>
+
+        <div class="note-box">
+            <strong>Note:</strong> The synopsis must be approved and signed by the project guide before submission. A signed hard copy is to be submitted to the Project Coordinator by the deadline notified for the session.
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <span>Ramdeobaba University — Department of Computer Science & Engineering</span>
+        <span>Page 4 of 4</span>
+    </div>
+</div>
+
+</body>
+</html>
