@@ -17,10 +17,15 @@ if not browser_exe:
     raise RuntimeError("No compatible browser found.")
 
 print(f"[INFO] Using browser engine: {browser_exe}")
+import tempfile
+user_data = os.path.join(tempfile.gettempdir(), 'chrome_headless_temp')
+
 cmd = [
     browser_exe,
     "--headless",
+    "--no-sandbox",
     "--disable-gpu",
+    f"--user-data-dir={user_data}",
     "--no-pdf-header-footer",
     "--run-all-compositor-stages-before-draw",
     f"--print-to-pdf={PDF_PATH}",
